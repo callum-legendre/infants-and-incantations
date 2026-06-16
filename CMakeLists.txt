@@ -13,3 +13,5 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(ogre)
+
+target_link_libraries(iai PRIVATE OgreMain)
