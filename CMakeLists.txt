@@ -4,7 +4,10 @@ cmake_minimum_required(VERSION 4.3.3)
 
 project(infants-and-incantations)
 
-add_executable(iai src/main.cpp)
+add_executable(iai 
+src/main.cpp
+src/entity.cpp
+)
 
 FetchContent_Declare(
 	ogre
