@@ -7,6 +7,7 @@ project(infants-and-incantations)
 add_executable(iai 
 src/main.cpp
 src/entity.cpp
+src/engine.cpp
 )
 
 FetchContent_Declare(
@@ -17,4 +18,10 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(ogre)
 
-target_link_libraries(iai PRIVATE OgreMain)
+target_link_libraries(iai 
+	PRIVATE 
+		OgreMain 
+		OgreBites
+)
+
+target_include_directories(iai PRIVATE include)
