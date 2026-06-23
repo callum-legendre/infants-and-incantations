@@ -52,10 +52,10 @@ Engine::Engine()
     // render the camera view into the main window
     ctx.getRenderWindow()->addViewport(cam);
 
-    // create an entity to render
-    // Ogre::Entity* ogreEntity = scnMgr->createEntity("ogrehead.mesh"); (commented becuase currenlty this file doesnt exist and crashes the program)
-    Ogre::SceneNode* ogreNode = scnMgr->getRootSceneNode()->createChildSceneNode(); // create another scene node
-    ogreNode->attachObject(ogreEntity); // attach the ogre to the node
+    // create an entity to render (commented becuase currenlty this file doesnt exist and crashes the program)
+    // Ogre::Entity* ogreEntity = scnMgr->createEntity("ogrehead.mesh"); 
+    // Ogre::SceneNode* ogreNode = scnMgr->getRootSceneNode()->createChildSceneNode(); // create another scene node
+    // ogreNode->attachObject(ogreEntity); // attach the ogre to the node
 }
 
 bool Engine::Initialise()
