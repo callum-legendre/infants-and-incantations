@@ -1,81 +1,254 @@
 #include "engine.h"
 
-Engine::Engine()
+Engine::Engine()   
 {
-    /*
-    // get and then set the avaliable render system
-    auto renderers = root.getAvailableRenderers();
+    // make resource path
+    resourcePath = getResourceDirectory();
+}
 
-    // check if renderers empty
-    if (renderers.empty()){
-        std::cout << "no renderers found" << std::endl;
-    }
-
-    // otherwise set the render system to the first one
-    root.setRenderSystem(renderers.front());
-
-    // create scene manager
-    scnMgr = root.createSceneManager();
-    */
-
-    // instanciate context and initialise app
-    OgreBites::ApplicationContext ctx("Infants and Incantations");
-    ctx.initApp();
-
-    // get pointer to the root
-    Ogre::Root* root = ctx.getRoot();
-
-    // get pointer to the scene manager
-    Ogre::SceneManager* scnMgr = root->createSceneManager();
-
-    // get shader generator and set it to singleton
-    shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
-    shadergen->addSceneManager(scnMgr); // add the scene manager to the shader generator (register it with generator)
-
-    // get some light in here
-    Ogre::Light* light = scnMgr->createLight("MainLight"); // creates a light in scene manager and directs pointer to it
-    Ogre::SceneNode* lightNode = scnMgr->getRootSceneNode()->createChildSceneNode(); // creates a node in the scene for the light
-    lightNode->attachObject(light); // attach the light to the newly created node
-    lightNode->setPosition(20, 80, 50); // set the position of the light
-
-    // create a camera
-    Ogre::SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode(); // creates a node in the scene
-    Ogre::Camera* cam = scnMgr->createCamera("myCam"); // creates a camera obejct in the scene
-
-    // set proporties of the camera
-    cam->setNearClipDistance(5); 
-    cam->setAutoAspectRatio(true);
-
-    camNode->attachObject(cam); // attach the camera to the newly created node
-    camNode->setPosition(0, 0, 140); // set the position of the camera 
-
-    // render the camera view into the main window
-    ctx.getRenderWindow()->addViewport(cam);
-
-    // create an entity to render (commented becuase currenlty this file doesnt exist and crashes the program)
-    // Ogre::Entity* ogreEntity = scnMgr->createEntity("ogrehead.mesh"); 
-    // Ogre::SceneNode* ogreNode = scnMgr->getRootSceneNode()->createChildSceneNode(); // create another scene node
-    // ogreNode->attachObject(ogreEntity); // attach the ogre to the node
+Engine::~Engine()
+{
+    Shutdown();
 }
 
 bool Engine::Initialise()
 {
-    // initialise ogre without creating the window
-    // root.initialise(false);
+    // initialise SDL
+    SDLInitialise();    
 
+    // initialise the root
+    root = std::make_unique<Ogre::Root>((resourcePath / "plugins.cfg").string(), (resourcePath / "ogre.cfg").string(), (resourcePath / "Ogre.log").string());
 
+    // get the GL3+ render system
+    Ogre::RenderSystem* rs = root->getRenderSystemByName("OpenGL 3+ Rendering Subsystem");
 
-    // create the window now
-    // window = root.createRenderWindow("Test Window", 1280, 720, false);
+    if (!rs){
+        throw std::runtime_error("Couldn't find GL3+ renderer");
+    }
+
+    root->setRenderSystem(rs);
+
+    rs->setConfigOption("Video Mode", "1280 x 720");
+
+    // initialise root, do not create a window
+    root->initialise(false);
+
+    // debug
+    std::cout << "DEBUG: " << root->getRenderSystem()->getName() << std::endl;
+    // end debug
+
+    createOgreWindow();
+
+    // create scene manager
+    scnMgr = root->createSceneManager();
+
+    RTSSInitialise();
+
+    resourceInitialise();
+
+    sceneInitialise();
 
     return true;
 }
 
+void Engine::SDLInitialise()
+{
+    if (SDL_Init(SDL_INIT_VIDEO) != 0)
+    {
+        throw std::runtime_error(SDL_GetError());
+    }   
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    mWindow = SDL_CreateWindow("Infants and Incantations", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+
+    if (!mWindow) {
+        throw std::runtime_error(SDL_GetError());
+    }
+}
+
 void Engine::Run()
 {
-    // run updates for as long as the window is open
-    // if (window->isClosed()){
+    bool running = true;
 
-        // root.startRendering();
-    // }
+    while (running)
+    {
+        SDL_Event e;
+
+        while (SDL_PollEvent(&e))
+        {
+            switch(e.type)
+            {
+                case SDL_QUIT:
+                    running = false;
+                    break;
+                case SDL_WINDOWEVENT:
+                if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                    
+                    std::cout << "SIZE_CHANGED\n";
+
+                    int w, h;
+                    SDL_GetWindowSize(mWindow, &w, &h);
+
+                    mRenderWindow->resize(w, h);
+                    mRenderWindow->windowMovedOrResized();
+                }
+                break;
+            }
+        }
+
+        if (mRenderWindow->isClosed()){
+            running = false;
+            break;
+        }
+
+        SDL_PumpEvents();
+        if (!root->renderOneFrame()) {
+            running = false;
+        }
+    }
+}
+
+void Engine::sceneInitialise()
+{
+    // without light we would just get a black screen    
+    Ogre::Light* light = scnMgr->createLight("MainLight");
+    Ogre::SceneNode* lightNode = scnMgr->getRootSceneNode()->createChildSceneNode();
+    lightNode->setPosition(0, 10, 15);
+    lightNode->attachObject(light);
+ 
+    // also need to tell where we are
+    Ogre::SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
+    camNode->setPosition(0, 0, 15);
+    camNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
+ 
+    // create the camera
+    cam = scnMgr->createCamera("myCam");
+    cam->setNearClipDistance(5); // specific to this sample
+    cam->setAutoAspectRatio(true);
+    camNode->attachObject(cam);
+ 
+    // and tell it to render into the main window
+    vp = mRenderWindow->addViewport(cam);
+    vp->setBackgroundColour(Ogre::ColourValue(1.0f, 0.0f, 1.0f));
+    vp->setMaterialScheme(Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME); // tell viewport to render with RTSS techniques instead of default
+
+    // finally something to render
+    Ogre::Entity* ent = scnMgr->createEntity("Sinbad.mesh");
+
+    // Creating the entity loads the materials referenced by the mesh. Generate
+    // their GL3+ shader techniques only after that has happened.
+    for (unsigned int i = 0; i < ent->getNumSubEntities(); ++i)
+    {
+        auto mat = ent->getSubEntity(i)->getMaterial();
+
+        const bool techniqueCreated = shadergen->createShaderBasedTechnique(
+            *mat,
+            Ogre::MaterialManager::DEFAULT_SCHEME_NAME,
+            Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME);
+
+        if (!techniqueCreated)
+        {
+            throw std::runtime_error(
+                "Could not generate an RTSS technique for material '" +
+                mat->getName() + "'");
+        }
+
+        shadergen->validateMaterial(
+            Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME,
+            *mat);
+    }
+
+    Ogre::SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
+    node->attachObject(ent);
+}
+
+void Engine::Shutdown()
+{
+    mRenderWindow = nullptr;
+
+    if (shadergen)
+    {
+        if (scnMgr)
+            shadergen->removeSceneManager(scnMgr);
+
+        Ogre::RTShader::ShaderGenerator::destroy();
+        shadergen = nullptr;
+    }
+
+    scnMgr = nullptr;
+    root.reset();
+
+    if (mWindow)
+    {
+        SDL_DestroyWindow(mWindow);
+        mWindow = nullptr;
+    }
+
+    SDL_Quit();
+}
+
+void Engine::resourceInitialise()
+{
+    //debug
+    std::cout << "DEBUG Current working directory: " << std::filesystem::current_path() << '\n';
+    // end debug
+
+    // get config file
+    Ogre::ConfigFile cf;
+
+    // load resoirces
+    cf.load((resourcePath / "resources.cfg").string());
+
+    Ogre::String secName, typeName, archName;
+
+    Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+
+    while (seci.hasMoreElements()) {
+        secName = seci.peekNextKey();
+
+        auto* settings = seci.getNext();
+
+        for (auto& setting : *settings) {
+            typeName = setting.first;
+            archName = setting.second;
+            
+            std::filesystem::path p = archName;
+
+            if (p.is_relative()){
+                p = resourcePath / p;
+            }
+            
+            std::cout << "Registering " << p << '\n';
+
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+                p.string(),
+                typeName,
+                secName);
+                    }
+    }
+
+    // initialise resource groups
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+}
+
+void Engine::RTSSInitialise()
+{
+    // register our scene with the RTSS
+    if (!Ogre::RTShader::ShaderGenerator::initialize()) { // initialise shader generator
+        throw std::runtime_error("Couldn't initialise RTShader"); // if failed then throw exception
+    }
+
+    shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr(); // get pointer to it
+
+    shadergen->setTargetLanguage("glsl"); // set language for it
+
+    auto cachePath = std::filesystem::temp_directory_path() / "iai_shader_cache"; // create path to temp shader cache directory 
+    std::filesystem::create_directories(cachePath); // create the cache
+    shadergen->setShaderCachePath(cachePath.string()); // set the gen's cache path
+
+    // add shadergen to the scenemanager
+    shadergen->addSceneManager(scnMgr);
 }

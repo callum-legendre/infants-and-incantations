@@ -3,19 +3,15 @@
 
 int main()
 {
-    /*
-    std::cout << "Hello, testing. Did Ogre install correctly?" << std::endl;
-    std::cout << "catherine was here" << std::endl;
-    std::cout << "Hello this is Joe" << std::endl;
-    std::cout << "Chels here, just testing" << std::endl;
-    */
-
-    // TODO: launch ogre view window here
+    // create engine object
     Engine engine;
+        
+    // instanciate context and initialise app
+    engine.Initialise();
 
-    if (engine.Initialise() == true){
-        engine.Run();
-    }
+    engine.Run();
+
+    engine.Shutdown();
 
     return 0;
 }
