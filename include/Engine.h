@@ -2,7 +2,9 @@
 #define ENGINE_H
 
 // standard module includes
+#include <filesystem>
 #include <iostream>
+#include <stdexcept>
 
 // ogre includes
 #include <OgreRoot.h>
@@ -10,26 +12,56 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <OgreLight.h>
-#include <OgreApplicationContext.h>
 #include <OgreEntity.h>
+#include <OgreSubEntity.h>
+#include <OgreCamera.h>
+#include <OgreViewport.h>
+#include <OgreConfigFile.h>
+#include <OgreResourceGroupManager.h>
+#include <OgreRTShaderSystem.h>
+#include <OgreStringConverter.h>
+#include <OgreMaterialManager.h>
+
+// SDL
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 
 // declaration of engine
 class Engine
 {
-    public:
-    Engine(); // constructor
-    bool Initialise(); // iniitalises the engine and opens window
-    void Run(); // updates each frame of the window
+public:
+    // constructor 
+    Engine();
+    ~Engine();
 
-    private:
-    OgreBites::ApplicationContext ctx; // application context
-    Ogre::Root* root; // the root object needed for all ogre things
-    Ogre::SceneManager* scnMgr; // scene manager
-    Ogre::RTShader::ShaderGenerator* shadergen; // shader generator
+    bool Initialise();
 
+    // render loop
+    void Run();
 
-    // Ogre::RenderWindow* window; // the render window object that the window is 
+    void Shutdown();
 
+private:
+    // ogre objects
+    std::unique_ptr<Ogre::Root> root;
+    Ogre::SceneManager* scnMgr = nullptr;
+    Ogre::RTShader::ShaderGenerator* shadergen = nullptr;
+    Ogre::Camera* cam = nullptr;
+    Ogre::Viewport* vp = nullptr;
+    Ogre::RenderWindow* mRenderWindow = nullptr;
+
+    // SDL objects
+    SDL_Window* mWindow = nullptr;
+
+    // resource path
+    std::filesystem::path resourcePath;
+
+    void SDLInitialise();
+    void createOgreWindow();
+    void sceneInitialise();
+    void resourceInitialise();
+    std::filesystem::path getResourceDirectory() const;
+    void RTSSInitialise();
 };
 
 #endif
