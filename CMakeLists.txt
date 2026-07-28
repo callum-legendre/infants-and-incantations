@@ -5,11 +5,8 @@ project(infants-and-incantations LANGUAGES CXX OBJCXX)
 # fetch content for building off of most recent Ogre branch
 include(FetchContent)
 
-option(IAI_USE_SDL "Use the original SDL2-backed engine" ON)
-
-if(IAI_USE_SDL)
-    find_package(SDL2 CONFIG REQUIRED)
-endif()
+# need SDL2 for handling window and input
+find_package(SDL2 CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -51,20 +48,12 @@ FetchContent_MakeAvailable(ogre)
 # -----------------------------------------------------------------------------
 #
 
-if(IAI_USE_SDL)
-    add_executable(iai MACOSX_BUNDLE
-        src/main.cpp
-        src/entity.cpp
-        src/engine.cpp
-        src/EngineMac.mm
-    )
-else()
-    add_executable(iai MACOSX_BUNDLE
-        src/main_gl3plus.cpp
-        src/entity.cpp
-        src/engine_gl3plus.cpp
-    )
-endif()
+add_executable(iai MACOSX_BUNDLE
+    src/main.cpp
+    src/entity.cpp
+    src/engine.cpp
+    src/EngineMac.mm
+)
 
 set_target_properties(iai PROPERTIES
     MACOSX_BUNDLE TRUE
@@ -75,17 +64,14 @@ target_include_directories(iai PRIVATE
     include
 )
 
-# Link the Ogre libraries used by both engine variants.
+# link ogre libraries we need and SDL2
 target_link_libraries(iai PRIVATE
+    SDL2::SDL2
     OgreMain
     OgreBites
     OgreOverlay
     OgreRTShaderSystem
 )
-
-if(IAI_USE_SDL)
-    target_link_libraries(iai PRIVATE SDL2::SDL2)
-endif()
 
 add_custom_command(TARGET iai POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory
