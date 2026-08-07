@@ -84,23 +84,44 @@ void Engine::SDLInitialise()
 
 void Engine::Run()
 {
+    // set running to true for the loop
     bool running = true;
 
+    const Uint64 frequency = SDL_GetPerformanceFrequency(); // get the number of SDL counter ticks each second (the frequency of them)
+    Uint64 previousCounter = SDL_GetPerformanceCounter(); // get the current number of counter ticks, this will become the previous number of ticks when loop is entered 
+
+    // loop that updates every frame
     while (running)
     {
-        SDL_Event e;
+        // get the current counter at the beginning of each frame 
+        const Uint64 currentCounter = SDL_GetPerformanceCounter();
 
+        // calculate deltaTime
+        const float deltaTime = static_cast<float>(currentCounter - previousCounter) / static_cast<float>(frequency);
+
+        // update previous counter
+        previousCounter = currentCounter;
+
+        // clamp deltatime to ensure no funny buisness when unusually large values occur
+        const float clampedTime = std::min(deltaTime, 0.1f);
+
+        // update the current level
+        level->update(clampedTime);
+
+        // SDL event variable, whenever something happens to the window it will be reflected in this variable
+        SDL_Event e;
+        // if something happens to the window, enter this loop
         while (SDL_PollEvent(&e))
         {
+
+            // handle the window behavior depending on the event 
             switch(e.type)
             {
-                case SDL_QUIT:
+                case SDL_QUIT: // if the window was closed, then exit the frame loop
                     running = false;
                     break;
-                case SDL_WINDOWEVENT:
+                case SDL_WINDOWEVENT: // if other event, then resize the window properly
                 if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    
-                    std::cout << "SIZE_CHANGED\n";
 
                     int w, h;
                     SDL_GetWindowSize(mWindow, &w, &h);
@@ -112,11 +133,13 @@ void Engine::Run()
             }
         }
 
+        // check to see if the window was closed here for redundancy
         if (mRenderWindow->isClosed()){
             running = false;
             break;
         }
 
+        // update the frame as long as the window is open
         SDL_PumpEvents();
         if (!root->renderOneFrame()) {
             running = false;
