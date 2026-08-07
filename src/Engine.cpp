@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "Engine.h"
 
 Engine::Engine()   
 {
@@ -46,9 +46,22 @@ bool Engine::Initialise()
 
     resourceInitialise();
 
-    sceneInitialise();
+    prepareMaterials();
+
+    viewportInitialise();
+
+    loadLevel();
 
     return true;
+}
+
+void Engine::loadLevel()
+{
+    // instanciate the level
+    level = std::make_unique<LevelScene>(*scnMgr, *cameraNode);
+    
+    // load the level
+    level->load();
 }
 
 void Engine::SDLInitialise()
@@ -111,64 +124,31 @@ void Engine::Run()
     }
 }
 
-void Engine::sceneInitialise()
+void Engine::viewportInitialise()
 {
-    // without light we would just get a black screen    
-    Ogre::Light* light = scnMgr->createLight("MainLight");
-    Ogre::SceneNode* lightNode = scnMgr->getRootSceneNode()->createChildSceneNode();
-    lightNode->setPosition(0, 10, 15);
-    lightNode->attachObject(light);
- 
     // also need to tell where we are
-    Ogre::SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
-    camNode->setPosition(0, 0, 15);
-    camNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
+    cameraNode = scnMgr->getRootSceneNode()->createChildSceneNode();
+    cameraNode->setPosition(0, 0, 15);
+    cameraNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
  
     // create the camera
-    cam = scnMgr->createCamera("myCam");
+    Ogre::Camera* cam = scnMgr->createCamera("PlayerCamera");
     cam->setNearClipDistance(5); // specific to this sample
     cam->setAutoAspectRatio(true);
-    camNode->attachObject(cam);
+    cameraNode->attachObject(cam);
  
     // and tell it to render into the main window
     vp = mRenderWindow->addViewport(cam);
-    vp->setBackgroundColour(Ogre::ColourValue(1.0f, 0.0f, 1.0f));
+    vp->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
     vp->setMaterialScheme(Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME); // tell viewport to render with RTSS techniques instead of default
-
-    // finally something to render
-    Ogre::Entity* ent = scnMgr->createEntity("Sinbad.mesh");
-
-    // Creating the entity loads the materials referenced by the mesh. Generate
-    // their GL3+ shader techniques only after that has happened.
-    for (unsigned int i = 0; i < ent->getNumSubEntities(); ++i)
-    {
-        auto mat = ent->getSubEntity(i)->getMaterial();
-
-        const bool techniqueCreated = shadergen->createShaderBasedTechnique(
-            *mat,
-            Ogre::MaterialManager::DEFAULT_SCHEME_NAME,
-            Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME);
-
-        if (!techniqueCreated)
-        {
-            throw std::runtime_error(
-                "Could not generate an RTSS technique for material '" +
-                mat->getName() + "'");
-        }
-
-        shadergen->validateMaterial(
-            Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME,
-            *mat);
-    }
-
-    Ogre::SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
-    node->attachObject(ent);
 }
 
 void Engine::Shutdown()
 {
+    // reset the render window pointer
     mRenderWindow = nullptr;
 
+    // unload the shader genertor
     if (shadergen)
     {
         if (scnMgr)
@@ -178,15 +158,23 @@ void Engine::Shutdown()
         shadergen = nullptr;
     }
 
+    // unload the active level
+    level->unload();
+
+    // null out the screen manager
     scnMgr = nullptr;
+
+    // destroy the root
     root.reset();
 
+    // destroy the window
     if (mWindow)
     {
         SDL_DestroyWindow(mWindow);
         mWindow = nullptr;
     }
 
+    // close SDL
     SDL_Quit();
 }
 
@@ -251,4 +239,30 @@ void Engine::RTSSInitialise()
 
     // add shadergen to the scenemanager
     shadergen->addSceneManager(scnMgr);
+}
+
+void Engine::prepareMaterials()
+{
+    auto materials =
+        Ogre::MaterialManager::getSingleton().getResourceIterator();
+
+    while (materials.hasMoreElements())
+    {
+        auto material =
+            Ogre::static_pointer_cast<Ogre::Material>(materials.getNext());
+
+        // Material scripts are parsed during resource-group initialisation,
+        // but their supported techniques are not compiled until the material
+        // is loaded. RTSS needs that compiled source technique.
+        material->load();
+
+        shadergen->createShaderBasedTechnique(
+            *material,
+            Ogre::MaterialManager::DEFAULT_SCHEME_NAME,
+            Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME);
+
+        shadergen->validateMaterial(
+            Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME,
+            *material);
+    }
 }

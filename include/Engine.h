@@ -6,7 +6,7 @@
 #include <iostream>
 #include <stdexcept>
 
-// ogre includes
+// Ogre includes
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 #include <OgreSceneManager.h>
@@ -18,13 +18,16 @@
 #include <OgreViewport.h>
 #include <OgreConfigFile.h>
 #include <OgreResourceGroupManager.h>
-#include <OgreRTShaderSystem.h>
 #include <OgreStringConverter.h>
 #include <OgreMaterialManager.h>
+#include <OgreRTShaderSystem.h>
 
 // SDL
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
+
+// other project includes
+#include "LevelScene.h"
 
 // declaration of engine
 class Engine
@@ -46,7 +49,7 @@ private:
     std::unique_ptr<Ogre::Root> root;
     Ogre::SceneManager* scnMgr = nullptr;
     Ogre::RTShader::ShaderGenerator* shadergen = nullptr;
-    Ogre::Camera* cam = nullptr;
+    Ogre::SceneNode* cameraNode = nullptr;
     Ogre::Viewport* vp = nullptr;
     Ogre::RenderWindow* mRenderWindow = nullptr;
 
@@ -56,12 +59,17 @@ private:
     // resource path
     std::filesystem::path resourcePath;
 
+    // active level
+    std::unique_ptr<LevelScene> level;
+
     void SDLInitialise();
     void createOgreWindow();
-    void sceneInitialise();
+    void viewportInitialise();
     void resourceInitialise();
+    void prepareMaterials();
     std::filesystem::path getResourceDirectory() const;
     void RTSSInitialise();
+    void loadLevel();
 };
 
 #endif

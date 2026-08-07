@@ -49,10 +49,10 @@ FetchContent_MakeAvailable(ogre)
 #
 
 add_executable(iai MACOSX_BUNDLE
-    src/main.cpp
-    src/entity.cpp
-    src/engine.cpp
+    src/Main.cpp
+    src/Engine.cpp
     src/EngineMac.mm
+    src/LevelScene.cpp
 )
 
 set_target_properties(iai PROPERTIES
