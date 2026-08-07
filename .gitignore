@@ -40,9 +40,14 @@
 *.app
 
 # Build directories
-build/
-Build/
-build-*/
+/build/
+/Build/
+/build-*/
+
+# Install/staging directories
+/install/
+/Install/
+/install-*/
 
 # CMake generated files
 CMakeFiles/
@@ -55,6 +60,7 @@ compile_commands.json
 # Temporary files
 *.tmp
 *.log
+*.log.*
 *.bak
 *.swp
 

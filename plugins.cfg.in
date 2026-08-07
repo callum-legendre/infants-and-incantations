@@ -1,0 +1,4 @@
+PluginFolder=@PLUGIN_FOLDER@
+
+Plugin=Codec_FreeImage
+Plugin=RenderSystem_GL3Plus

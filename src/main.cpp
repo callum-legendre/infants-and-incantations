@@ -1,11 +1,17 @@
 #include <iostream>
+#include "Engine.h"
 
 int main()
 {
-    std::cout << "Hello, testing. Did Ogre install correctly?" << std::endl;
-    std::cout << "catherine was here" << std::endl;
-    std::cout << "Hello this is Joe" << std::endl;
-    std::cout << "Chels here, just testing" << std::endl;
-    
+    // create engine object
+    Engine engine;
+        
+    // instanciate context and initialise app
+    engine.Initialise();
+
+    engine.Run();
+
+    engine.Shutdown();
+
     return 0;
 }
