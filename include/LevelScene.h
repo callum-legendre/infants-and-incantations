@@ -19,6 +19,9 @@ public:
     void load();
     void unload();
 
+    // update function runs every frame
+    void update(float deltaTime);
+
 private:
     // proporties of the level passed from Engine
     Ogre::SceneManager& scnMgr;

@@ -110,3 +110,8 @@ LevelScene::~LevelScene()
 {
     unload();
 }
+
+void LevelScene::update()
+{
+    // iterate through all entities and run the update method on them
+}
