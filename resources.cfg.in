@@ -1,0 +1,17 @@
+# this line will end up in the [Essential] group
+FileSystem=/Users/callumlegendre/Documents/GitHub/infants-and-incantations/build/_deps/ogre-src/Samples/Media/thumbnails
+
+
+[OgreInternal]
+FileSystem=@OGRE_MEDIA_DIR@/Main
+
+
+# Common sample resources needed by many of the samples.
+# Rarely used resources should be separately loaded by the
+# samples which require them.
+[General]
+FileSystem=assets/mesh
+FileSystem=assets/material
+
+[RTShaderLib]
+FileSystem=@OGRE_MEDIA_DIR@/RTShaderLib
