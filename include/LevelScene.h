@@ -2,7 +2,7 @@
 #define LEVELSCENE_H
 
 #include <vector>
-#include "GameObejct.h"
+#include "GameObject.h"
 
 namespace Ogre
 {

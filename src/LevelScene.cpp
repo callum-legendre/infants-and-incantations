@@ -117,6 +117,6 @@ void LevelScene::update(float deltaTime)
     // loop through all gameObjects and call update on them
     for (auto& gameObject : gameObjects)
     {
-        gmaeObject->update(deltaTime);
+        gameObject->update(deltaTime);
     }
 }
