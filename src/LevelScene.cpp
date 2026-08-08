@@ -96,6 +96,9 @@ void LevelScene::unload()
     // destroy the pseudo root
     scnMgr.destroySceneNode(rootNode);
 
+    // remove all gameobjects stored in the vector safely
+    gameObjects.clear();
+
     // set relevant pointers to null
     rootNode = nullptr;
     terrainNode = nullptr;
