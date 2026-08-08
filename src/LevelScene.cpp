@@ -1,7 +1,13 @@
 #include "LevelScene.h" // header file
 
 // ogre includes
-#include <Ogre.h>
+#include <OgreEntity.h>
+#include <OgreLight.h>
+#include <OgreMeshManager.h>
+#include <OgrePlane.h>
+#include <OgreResourceGroupManager.h>
+#include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 
 LevelScene::LevelScene(Ogre::SceneManager& scnMgr, Ogre::SceneNode& cameraNode) : scnMgr(scnMgr), cameraNode(cameraNode)
 { // takes screen manager and camera node as arguments. I think when player implementation is done will no longer need camera 
@@ -18,9 +24,11 @@ void LevelScene::load()
     positionCamera(); // position the camera correctly
 
     // create test object
-    Ogre::Entity* baby = scnMgr.createEntity("baby.mesh");
-    Ogre::SceneNode* node = rootNode->createChildSceneNode();
-    node->attachObject(baby);
+    Ogre::Entity* baby = scnMgr.createEntity("baby.mesh"); // create entity mesh
+    Ogre::SceneNode* babyNode = rootNode->createChildSceneNode(); // create the scene node
+    babyNode->attachObject(baby); // attach the mesh to the node
+    gameObjects.push_back(std::make_unique<GameObject>(babyNode)); // create the game object and then add it to the vector
+
 }
 
 void LevelScene::positionCamera()
@@ -104,7 +112,11 @@ LevelScene::~LevelScene()
     unload();
 }
 
-void LevelScene::update()
+void LevelScene::update(float deltaTime)
 {
-    // iterate through all entities and run the update method on them
+    // loop through all gameObjects and call update on them
+    for (auto& gameObject : gameObjects)
+    {
+        gmaeObject->update(deltaTime);
+    }
 }
