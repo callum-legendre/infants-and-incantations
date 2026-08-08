@@ -17,6 +17,7 @@
 
 // other includes from this project
 #include "LevelScene.h"
+#include "Player.h"
 
 // declaration of engine
 class Engine
@@ -51,6 +52,9 @@ private:
     // active level
     std::unique_ptr<LevelScene> level;
 
+    // player object
+    std::unique_ptr<Player> player;
+
     void SDLInitialise();
     void createOgreWindow();
     void viewportInitialise();
@@ -59,6 +63,7 @@ private:
     std::filesystem::path getResourceDirectory() const;
     void RTSSInitialise();
     void loadLevel();
+    void createPlayer();
 };
 
 #endif

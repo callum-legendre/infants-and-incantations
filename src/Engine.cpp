@@ -21,21 +21,16 @@ bool Engine::Initialise()
 
     // get the GL3+ render system
     Ogre::RenderSystem* rs = root->getRenderSystemByName("OpenGL 3+ Rendering Subsystem");
-
-    if (!rs){
+    if (!rs){ // catch error if it couldnt find it
         throw std::runtime_error("Couldn't find GL3+ renderer");
     }
 
-    root->setRenderSystem(rs);
+    root->setRenderSystem(rs); // set the render system in ogre
 
-    rs->setConfigOption("Video Mode", "1280 x 720");
+    rs->setConfigOption("Video Mode", "1280 x 720"); // set window size
 
     // initialise root, do not create a window
     root->initialise(false);
-
-    // debug
-    std::cout << "DEBUG: " << root->getRenderSystem()->getName() << std::endl;
-    // end debug
 
     createOgreWindow();
 
@@ -49,6 +44,8 @@ bool Engine::Initialise()
     prepareMaterials();
 
     viewportInitialise();
+
+    createPlayer();
 
     loadLevel();
 
@@ -105,8 +102,9 @@ void Engine::Run()
         // clamp deltatime to ensure no funny buisness when unusually large values occur
         const float clampedTime = std::min(deltaTime, 0.1f);
 
-        // update the current level
+        // update the level and player
         level->update(clampedTime);
+        player->update(clampedTime);
 
         // SDL event variable, whenever something happens to the window it will be reflected in this variable
         SDL_Event e;
@@ -288,4 +286,15 @@ void Engine::prepareMaterials()
             Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME,
             *material);
     }
+}
+
+void Engine::createPlayer()
+{
+    Ogre::Entity* playerMesh = scnMgr.createEntity("baby.mesh"); // create entity mesh
+
+    Ogre::SceneNode* playerNode = root->createChildSceneNode("PlayerNode"); // create the player node
+
+    playerNode->attachObject(playerMesh); // attach the mesh to the node
+    
+    player = make_unique<Player>(playerNode) // create the player object using the ogre node
 }
