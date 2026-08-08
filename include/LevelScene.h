@@ -1,6 +1,9 @@
 #ifndef LEVELSCENE_H
 #define LEVELSCENE_H
 
+#include <vector>
+#include "GameObejct.h"
+
 namespace Ogre
 {
     class SceneManager;
@@ -30,6 +33,7 @@ private:
     // non-passed proporties of the level
     Ogre::SceneNode* rootNode = nullptr;
     Ogre::SceneNode* terrainNode = nullptr;
+    std::vector<std::unique_ptr<GameObject>> gameObjects;
     
     // methods
     void createTerrain();
