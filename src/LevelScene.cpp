@@ -15,13 +15,6 @@ void LevelScene::load()
     createTerrain(); // create the level environment
     createLighting(); // create the lighting
     positionCamera(); // position the camera correctly
-
-    // create test object
-    Ogre::Entity* baby = scnMgr.createEntity("baby.mesh"); // create entity mesh
-    Ogre::SceneNode* babyNode = rootNode->createChildSceneNode(); // create the scene node
-    babyNode->attachObject(baby); // attach the mesh to the node
-    gameObjects.push_back(std::make_unique<GameObject>(babyNode)); // create the game object and then add it to the vector
-
 }
 
 void LevelScene::positionCamera()
