@@ -1,16 +1,9 @@
 #include "LevelScene.h" // header file
 
-// ogre includes
-#include <OgreEntity.h>
-#include <OgreLight.h>
-#include <OgreMeshManager.h>
-#include <OgrePlane.h>
-#include <OgreResourceGroupManager.h>
-#include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
+#include <Ogre.h>
 
 LevelScene::LevelScene(Ogre::SceneManager& scnMgr, Ogre::SceneNode& cameraNode) : scnMgr(scnMgr), cameraNode(cameraNode)
-{
+{ // takes screen manager and camera node as arguments. I think when player implementation is done will no longer need camera 
     
 }
 
@@ -52,7 +45,7 @@ void LevelScene::createLighting()
     lightNode->attachObject(light);
 }
 
-void LevelScene::createTerrain()
+void LevelScene::createTerrain() 
 {
     // create the plane object
     Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);

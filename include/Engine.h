@@ -8,26 +8,14 @@
 #include <algorithm>
 
 // Ogre includes
-#include <OgreRoot.h>
-#include <OgreRenderWindow.h>
-#include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
-#include <OgreLight.h>
-#include <OgreEntity.h>
-#include <OgreSubEntity.h>
-#include <OgreCamera.h>
-#include <OgreViewport.h>
-#include <OgreConfigFile.h>
-#include <OgreResourceGroupManager.h>
-#include <OgreStringConverter.h>
-#include <OgreMaterialManager.h>
+#include <Ogre.h>
 #include <OgreRTShaderSystem.h>
 
 // SDL
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 
-// other project includes
+// other includes from this project
 #include "LevelScene.h"
 
 // declaration of engine
