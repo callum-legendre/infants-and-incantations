@@ -19,7 +19,7 @@
 #include "LevelScene.h"
 #include "Player.h"
 
-// declaration of engine
+// declaration of engine class
 class Engine
 {
 public:

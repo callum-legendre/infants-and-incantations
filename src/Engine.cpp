@@ -111,7 +111,6 @@ void Engine::Run()
         // if something happens to the window, enter this loop
         while (SDL_PollEvent(&e))
         {
-
             // handle the window behavior depending on the event 
             switch(e.type)
             {
