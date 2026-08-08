@@ -1,6 +1,5 @@
 #include "LevelScene.h" // header file
 
-// ogre includes
 #include <Ogre.h>
 
 LevelScene::LevelScene(Ogre::SceneManager& scnMgr, Ogre::SceneNode& cameraNode) : scnMgr(scnMgr), cameraNode(cameraNode)
@@ -18,9 +17,11 @@ void LevelScene::load()
     positionCamera(); // position the camera correctly
 
     // create test object
-    Ogre::Entity* baby = scnMgr.createEntity("baby.mesh");
-    Ogre::SceneNode* node = rootNode->createChildSceneNode();
-    node->attachObject(baby);
+    Ogre::Entity* baby = scnMgr.createEntity("baby.mesh"); // create entity mesh
+    Ogre::SceneNode* babyNode = rootNode->createChildSceneNode(); // create the scene node
+    babyNode->attachObject(baby); // attach the mesh to the node
+    gameObjects.push_back(std::make_unique<GameObject>(babyNode)); // create the game object and then add it to the vector
+
 }
 
 void LevelScene::positionCamera()
@@ -88,6 +89,9 @@ void LevelScene::unload()
     // destroy the pseudo root
     scnMgr.destroySceneNode(rootNode);
 
+    // remove all gameobjects stored in the vector safely
+    gameObjects.clear();
+
     // set relevant pointers to null
     rootNode = nullptr;
     terrainNode = nullptr;
@@ -102,4 +106,13 @@ void LevelScene::unload()
 LevelScene::~LevelScene()
 {
     unload();
+}
+
+void LevelScene::update(float deltaTime)
+{
+    // loop through all gameObjects and call update on them
+    for (auto& gameObject : gameObjects)
+    {
+        gameObject->update(deltaTime);
+    }
 }

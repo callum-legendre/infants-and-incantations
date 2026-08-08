@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 // Ogre includes
 #include <Ogre.h>

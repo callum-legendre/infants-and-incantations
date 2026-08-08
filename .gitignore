@@ -49,6 +49,11 @@
 /Install/
 /install-*/
 
+# install directory
+install/
+Install/
+install-*/
+
 # CMake generated files
 CMakeFiles/
 CMakeCache.txt
