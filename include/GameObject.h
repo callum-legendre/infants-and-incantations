@@ -8,11 +8,7 @@ All other non-specific frame updates that are needed are done in the update() fu
 #define GAMEOBJECT_H
 
 #include "Transform.h"
-
-namespace Ogre // include Ogre
-{
-    class SceneNode;
-}
+#include <OgreSceneNode.h>
 
 
 class GameObject
@@ -26,7 +22,7 @@ class GameObject
         UpdateTransform();
     } 
 
-    virtual void OnUpdate(float deltaTime); // overriden method in each child of the GameObject class
+    virtual void OnUpdate(float deltaTime) {}; // overriden method in each child of the GameObject class, this is empty in case it is not overriden in children
 
     
     virtual ~GameObject() = default; // destructor
@@ -44,7 +40,7 @@ class GameObject
         if (transform.IsDirty()){
             // update transform in scene
             sceneNode->setPosition(transform.GetPosition());
-            sceneNode->setRotation(transform.GetRotation);
+            sceneNode->setOrientation(transform.GetRotation());
             sceneNode->setScale(transform.GetScale());
             // clean the transform
             transform.ClearDirty();
