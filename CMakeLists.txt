@@ -54,6 +54,7 @@ add_executable(iai MACOSX_BUNDLE
     src/EngineMac.mm
     src/LevelScene.cpp
     src/Player.cpp
+    src/PlayerCamera.cpp
 )
 
 set_target_properties(iai PROPERTIES
