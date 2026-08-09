@@ -64,6 +64,7 @@ private:
     void RTSSInitialise();
     void loadLevel();
     void createPlayer();
+    void updateCamera(float deltaTime);
 };
 
 #endif
