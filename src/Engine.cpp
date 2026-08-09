@@ -302,7 +302,7 @@ void Engine::createPlayer()
 void Engine::updateCamera(float deltaTime) // NOTE: maybe move this into a camera object????
 {
     // get the player's position in world coordinates
-    Ogre::Vector3 playerPos = player->GetObjectNode()->_getDerivedPosition();
+    Ogre::Vector3 playerPos = player->GetSceneNode()->_getDerivedPosition();
 
     // get target position of the camera
     Ogre::Vector3 targetPos = playerPos + Ogre::Vector3(0.0f, 8.0f, 12.0f);
