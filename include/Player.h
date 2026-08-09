@@ -20,6 +20,8 @@ class Player : public GameObject // inherits from GameObject class
 {
     public:
 
+    Player(Ogre::SceneNode* playerNode) : GameObject(playerNode) {}; // forward the constructor to the parent class 
+
     void OnUpdate(float deltaTime) override; // override method for the update function
 
     private:
