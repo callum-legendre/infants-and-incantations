@@ -18,6 +18,7 @@
 // other includes from this project
 #include "LevelScene.h"
 #include "Player.h"
+#include "PlayerCamera.h"
 
 // declaration of engine class
 class Engine
@@ -39,7 +40,6 @@ private:
     std::unique_ptr<Ogre::Root> root;
     Ogre::SceneManager* scnMgr = nullptr;
     Ogre::RTShader::ShaderGenerator* shadergen = nullptr;
-    Ogre::SceneNode* cameraNode = nullptr;
     Ogre::Viewport* vp = nullptr;
     Ogre::RenderWindow* mRenderWindow = nullptr;
 
@@ -55,6 +55,9 @@ private:
     // player object
     std::unique_ptr<Player> player;
 
+    // player camera object
+    std::unique_ptr<PlayerCamera> camera;
+
     void SDLInitialise();
     void createOgreWindow();
     void viewportInitialise();
@@ -64,7 +67,6 @@ private:
     void RTSSInitialise();
     void loadLevel();
     void createPlayer();
-    void updateCamera(float deltaTime);
 };
 
 #endif

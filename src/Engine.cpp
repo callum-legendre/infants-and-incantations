@@ -43,9 +43,9 @@ bool Engine::Initialise()
 
     prepareMaterials();
 
-    viewportInitialise();
-
     createPlayer();
+
+    viewportInitialise();
 
     loadLevel();
 
@@ -55,7 +55,7 @@ bool Engine::Initialise()
 void Engine::loadLevel()
 {
     // instanciate the level
-    level = std::make_unique<LevelScene>(*scnMgr, *cameraNode);
+    level = std::make_unique<LevelScene>(*scnMgr);
     
     // load the level
     level->load();
@@ -105,7 +105,7 @@ void Engine::Run()
         // update the level, player, and camera
         level->update(clampedTime);
         player->update(clampedTime);
-        updateCamera(clampedTime);
+        camera->update(clampedTime);
 
         // SDL event variable, whenever something happens to the window it will be reflected in this variable
         SDL_Event e;
@@ -148,7 +148,7 @@ void Engine::Run()
 void Engine::viewportInitialise()
 {
     // also need to tell where we are
-    cameraNode = scnMgr->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* cameraNode = scnMgr->getRootSceneNode()->createChildSceneNode();
     cameraNode->setPosition(0, 0, 15);
     cameraNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
  
@@ -157,6 +157,9 @@ void Engine::viewportInitialise()
     cam->setNearClipDistance(5); // specific to this sample
     cam->setAutoAspectRatio(true);
     cameraNode->attachObject(cam);
+
+    // create the camera GameObject
+    camera = std::make_unique<PlayerCamera>(cameraNode, player->GetSceneNode());
  
     // and tell it to render into the main window
     vp = mRenderWindow->addViewport(cam);
@@ -296,24 +299,5 @@ void Engine::createPlayer()
 
     playerNode->attachObject(playerMesh); // attach the mesh to the node
     
-    player = std::make_unique<Player>(playerNode, cameraNode); // create the player object using the ogre node
-}
-
-void Engine::updateCamera(float deltaTime) // NOTE: maybe move this into a camera object????
-{
-    // get the player's position in world coordinates
-    Ogre::Vector3 playerPos = player->GetSceneNode()->_getDerivedPosition();
-
-    // get target position of the camera
-    Ogre::Vector3 targetPos = playerPos + Ogre::Vector3(0.0f, 8.0f, 12.0f);
-
-    // blend value
-    constexpr float followSharpness = 8.0f;
-    const float blend = 1.0f - std::exp(-followSharpness * deltaTime);
-
-    // move the camera
-    cameraNode->setPosition(cameraNode->getPosition() + (targetPos - cameraNode->getPosition()) * blend);
-
-    // point camera at the player
-    cameraNode->lookAt(playerPos + Ogre::Vector3(0.0f, 1.0f, 0.0f), Ogre::Node::TS_WORLD);
+    player = std::make_unique<Player>(playerNode); // create the player object using the ogre node
 }
