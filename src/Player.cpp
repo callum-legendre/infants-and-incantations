@@ -1,8 +1,10 @@
 #include "Player.h"
 
+#include <OgreVector.h>
+
 void Player::OnUpdate(float deltaTime)
 {
-    InputState input = getInput();
+    movePlayer();
 }
 
 InputState Player::getInput()
@@ -17,4 +19,31 @@ InputState Player::getInput()
     };
 
     return inputState;
+}
+
+void Player::movePlayer(float deltaTime)
+{
+    InputState input = getInput(); // get input keys
+
+    Ogre::Vector3 direction = Ogre::Vector3::ZERO; // create movement vector
+
+    // apply movement from input
+    if (input.forward) {direction.z += 1.0f};
+    if (input.back) {direction.z -= 1.0f};
+    if (input.left) {direction.x -= 1.0f};
+    if (input.right) {direction.x += 1.0f};
+
+    // move the player object
+    if (direction.isZeroLength() = false){ // only move if the player presses movement input
+
+        // normalise direction
+        direction.normalise();
+
+        // update the player's transform
+        transform.Translate(direction * deltaTime * moveSpeed);
+
+        // turn model in direction of movement
+        Ogre::Vector3 facing = transform.GetRotation();
+        transform.SetRotiation(facing.getRotationTo(direction));
+    }
 }
