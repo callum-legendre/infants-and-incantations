@@ -28,8 +28,8 @@ void Player::movePlayer(float deltaTime)
     Ogre::Vector3 direction = Ogre::Vector3::ZERO; // create movement vector
 
     // apply movement from input
-    if (input.forward) {direction.z += 1.0f;}
-    if (input.back) {direction.z -= 1.0f;}
+    if (input.forward) {direction.z -= 1.0f;}
+    if (input.back) {direction.z += 1.0f;}
     if (input.left) {direction.x -= 1.0f;}
     if (input.right) {direction.x += 1.0f;}
 
