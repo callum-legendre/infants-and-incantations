@@ -28,7 +28,7 @@ class Player : public GameObject // inherits from GameObject class
     void movePlayer(float deltaTime);
 
     // proporties
-    constexpr moveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
+    static constexpr float moveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
 };
 
 #endif
