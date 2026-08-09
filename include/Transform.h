@@ -27,7 +27,7 @@ class Transform
         dirty = true;
     }
 
-    void SetRotiation(Ogre::Quaternion newRotation)
+    void SetRotation(Ogre::Quaternion newRotation)
     {
         rotation = newRotation;
         dirty = true;
