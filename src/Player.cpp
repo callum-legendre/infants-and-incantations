@@ -2,7 +2,7 @@
 
 #include <OgreVector.h>
 
-void Player::OnUpdate(float deltaTime)
+void Player::update(float deltaTime)
 {
     movePlayer(deltaTime);
 }
@@ -39,12 +39,12 @@ void Player::movePlayer(float deltaTime)
         // normalise direction
         direction.normalise();
 
-        // update the player's transform
-        transform.Translate(direction * deltaTime * moveSpeed);
+        // update the player's location
+        GetSceneNode()->translate(direction * deltaTime * moveSpeed);
 
         // turn model in direction of movement
         Ogre::Quaternion targetRotation = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
-        transform.SetRotation(targetRotation);
+        GetSceneNode()->setOrientation(targetRotation);
     }
 }
 
