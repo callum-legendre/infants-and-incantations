@@ -102,9 +102,10 @@ void Engine::Run()
         // clamp deltatime to ensure no funny buisness when unusually large values occur
         const float clampedTime = std::min(deltaTime, 0.1f);
 
-        // update the level and player
+        // update the level, player, and camera
         level->update(clampedTime);
         player->update(clampedTime);
+        updateCamera(clampedTime);
 
         // SDL event variable, whenever something happens to the window it will be reflected in this variable
         SDL_Event e;
@@ -295,5 +296,24 @@ void Engine::createPlayer()
 
     playerNode->attachObject(playerMesh); // attach the mesh to the node
     
-    player = std::make_unique<Player>(playerNode); // create the player object using the ogre node
+    player = std::make_unique<Player>(playerNode, cameraNode); // create the player object using the ogre node
+}
+
+void Engine::updateCamera(float deltaTime) // NOTE: maybe move this into a camera object????
+{
+    // get the player's position in world coordinates
+    Ogre::Vector3 playerPos = player->GetObjectNode()->_getDerivedPosition();
+
+    // get target position of the camera
+    Ogre::Vector3 targetPos = playerPos + Ogre::Vector3(0.0f, 8.0f, 12.0f);
+
+    // blend value
+    constexpr float followSharpness = 8.0f;
+    const float blend = 1.0f - std::exp(-followSharpness * deltaTime);
+
+    // move the camera
+    cameraNode->setPosition(cameraNode->getPosition() + (targetPos - cameraNode->getPosition()) * blend);
+
+    // point camera at the player
+    cameraNode->lookAt(playerPos + Ogre::Vector3(0.0f, 1.0f, 0.0f), Ogre::Node::TS_WORLD);
 }

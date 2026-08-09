@@ -15,6 +15,7 @@ class GameObject
 {
     public:
     explicit GameObject(Ogre::SceneNode* sceneNode) : sceneNode(sceneNode) {} // constructor
+    virtual ~GameObject() = default; // destructor
 
     void update(float deltaTime) // update that runs every frame, see OnUpdate() for unique object behavior
     {
@@ -23,9 +24,8 @@ class GameObject
     } 
 
     virtual void OnUpdate(float deltaTime) {}; // overriden method in each child of the GameObject class, this is empty in case it is not overriden in children
-
     
-    virtual ~GameObject() = default; // destructor
+    Ogre::SceneNode* GetObjectNode() {return sceneNode;} // get method for the scene node
 
     protected: // proporties + methods that can be accessed by child classes
     Ogre::SceneNode* sceneNode = nullptr;
