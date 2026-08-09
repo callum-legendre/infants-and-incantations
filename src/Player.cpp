@@ -1,8 +1,10 @@
 #include "Player.h"
 
-void Player::update(float deltaTime)
+void Player::OnUpdate(float deltaTime)
 {
+    InputState input = getInput();
 
+    
 }
 
 InputState Player::getInput()

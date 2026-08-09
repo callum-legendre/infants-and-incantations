@@ -20,7 +20,7 @@ class Player : public GameObject // inherits from GameObject class
 {
     public:
 
-    void update(float deltaTime) override; // override method for the update function
+    void OnUpdate(float deltaTime) override; // override method for the update function
 
     private:
 
