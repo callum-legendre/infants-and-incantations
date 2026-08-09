@@ -1,5 +1,7 @@
 /*
 This is the base class for all obejcts that will exist in the game, meaning every object will inherit from this class.
+Uses the 'Template Method' for the update function. OnUpdate() is overwritten to provide object specific behavior on each frame update.
+All other non-specific frame updates that are needed are done in the update() function to limit repetition of code.
 */
 
 #ifndef GAMEOBJECT_H
@@ -18,7 +20,13 @@ class GameObject
     public:
     explicit GameObject(Ogre::SceneNode* sceneNode) : sceneNode(sceneNode) {} // constructor
 
-    virtual void update(float deltaTime) {} // update that runs every frame, is overriden in all necissary objects
+    void update(float deltaTime) // update that runs every frame, see OnUpdate() for unique object behavior
+    {
+        OnUpdate(deltaTime);
+        UpdateTransform();
+    } 
+
+    virtual void OnUpdate(float deltaTime); // overriden method in each child of the GameObject class
 
     
     virtual ~GameObject() = default; // destructor
