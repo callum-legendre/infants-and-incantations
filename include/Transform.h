@@ -47,7 +47,7 @@ class Transform
 
     void Rotate(Ogre::Quaternion rotationOffset)
     {
-        rotation *= rotationOffset;
+        rotation = rotation * rotationOffset;
         dirty = true;
     }
 

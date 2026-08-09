@@ -289,11 +289,11 @@ void Engine::prepareMaterials()
 
 void Engine::createPlayer()
 {
-    Ogre::Entity* playerMesh = scnMgr.createEntity("baby.mesh"); // create entity mesh
+    Ogre::Entity* playerMesh = scnMgr->createEntity("baby.mesh"); // create entity mesh
 
-    Ogre::SceneNode* playerNode = root->createChildSceneNode("PlayerNode"); // create the player node
+    Ogre::SceneNode* playerNode = scnMgr->getRootSceneNode()->createChildSceneNode("PlayerNode"); // create the player node
 
     playerNode->attachObject(playerMesh); // attach the mesh to the node
     
-    player = make_unique<Player>(playerNode) // create the player object using the ogre node
+    player = std::make_unique<Player>(playerNode); // create the player object using the ogre node
 }
