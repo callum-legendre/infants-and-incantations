@@ -21,9 +21,9 @@ class GameObject
     Ogre::SceneNode* GetSceneNode() {return sceneNode;} // get method for the corresponding scene node
 
     protected: // proporties + methods that can be accessed by child classes
+    Ogre::SceneNode* sceneNode = nullptr;
 
     private:
-    Ogre::SceneNode* sceneNode = nullptr;
 };
 
 #endif

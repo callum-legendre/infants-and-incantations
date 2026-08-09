@@ -20,7 +20,7 @@ class Player : public GameObject // inherits from GameObject class
 {
     public:
     // inherited methods
-    Player(Ogre::SceneNode* playerNode, Ogre::SceneNode* camera) : GameObject(playerNode) {}; // constructor
+    Player(Ogre::SceneNode* playerNode) : GameObject(playerNode)  {}; // constructor
 
     // overriden methods
     void update(float deltaTime) override; // update function
