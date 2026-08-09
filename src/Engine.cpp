@@ -21,21 +21,16 @@ bool Engine::Initialise()
 
     // get the GL3+ render system
     Ogre::RenderSystem* rs = root->getRenderSystemByName("OpenGL 3+ Rendering Subsystem");
-
-    if (!rs){
+    if (!rs){ // catch error if it couldnt find it
         throw std::runtime_error("Couldn't find GL3+ renderer");
     }
 
-    root->setRenderSystem(rs);
+    root->setRenderSystem(rs); // set the render system in ogre
 
-    rs->setConfigOption("Video Mode", "1280 x 720");
+    rs->setConfigOption("Video Mode", "1280 x 720"); // set window size
 
     // initialise root, do not create a window
     root->initialise(false);
-
-    // debug
-    std::cout << "DEBUG: " << root->getRenderSystem()->getName() << std::endl;
-    // end debug
 
     createOgreWindow();
 
@@ -48,6 +43,8 @@ bool Engine::Initialise()
 
     prepareMaterials();
 
+    createPlayer();
+
     viewportInitialise();
 
     loadLevel();
@@ -58,7 +55,7 @@ bool Engine::Initialise()
 void Engine::loadLevel()
 {
     // instanciate the level
-    level = std::make_unique<LevelScene>(*scnMgr, *cameraNode);
+    level = std::make_unique<LevelScene>(*scnMgr);
     
     // load the level
     level->load();
@@ -105,15 +102,16 @@ void Engine::Run()
         // clamp deltatime to ensure no funny buisness when unusually large values occur
         const float clampedTime = std::min(deltaTime, 0.1f);
 
-        // update the current level
+        // update the level, player, and camera
         level->update(clampedTime);
+        player->update(clampedTime);
+        camera->update(clampedTime);
 
         // SDL event variable, whenever something happens to the window it will be reflected in this variable
         SDL_Event e;
         // if something happens to the window, enter this loop
         while (SDL_PollEvent(&e))
         {
-
             // handle the window behavior depending on the event 
             switch(e.type)
             {
@@ -150,7 +148,7 @@ void Engine::Run()
 void Engine::viewportInitialise()
 {
     // also need to tell where we are
-    cameraNode = scnMgr->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* cameraNode = scnMgr->getRootSceneNode()->createChildSceneNode();
     cameraNode->setPosition(0, 0, 15);
     cameraNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
  
@@ -159,6 +157,9 @@ void Engine::viewportInitialise()
     cam->setNearClipDistance(5); // specific to this sample
     cam->setAutoAspectRatio(true);
     cameraNode->attachObject(cam);
+
+    // create the camera GameObject
+    camera = std::make_unique<PlayerCamera>(cameraNode, player->GetSceneNode());
  
     // and tell it to render into the main window
     vp = mRenderWindow->addViewport(cam);
@@ -288,4 +289,15 @@ void Engine::prepareMaterials()
             Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME,
             *material);
     }
+}
+
+void Engine::createPlayer()
+{
+    Ogre::Entity* playerMesh = scnMgr->createEntity("baby.mesh"); // create entity mesh
+
+    Ogre::SceneNode* playerNode = scnMgr->getRootSceneNode()->createChildSceneNode("PlayerNode"); // create the player node
+
+    playerNode->attachObject(playerMesh); // attach the mesh to the node
+    
+    player = std::make_unique<Player>(playerNode); // create the player object using the ogre node
 }

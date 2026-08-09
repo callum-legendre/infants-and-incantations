@@ -15,7 +15,7 @@ class LevelScene
 {
 public:
     // constructor
-    explicit LevelScene(Ogre::SceneManager& scnMgr, Ogre::SceneNode& cameraNode);
+    explicit LevelScene(Ogre::SceneManager& scnMgr);
     ~LevelScene();
 
     // load and unload functions initialise and shutdown the level
@@ -28,7 +28,6 @@ public:
 private:
     // proporties of the level passed from Engine
     Ogre::SceneManager& scnMgr;
-    Ogre::SceneNode& cameraNode;
 
     // non-passed proporties of the level
     Ogre::SceneNode* rootNode = nullptr;
@@ -38,7 +37,6 @@ private:
     // methods
     void createTerrain();
     void createLighting();
-    void positionCamera();
 };
 
 
