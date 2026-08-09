@@ -2,8 +2,8 @@
 
 #include <Ogre.h>
 
-LevelScene::LevelScene(Ogre::SceneManager& scnMgr, Ogre::SceneNode& cameraNode) : scnMgr(scnMgr), cameraNode(cameraNode)
-{ // takes screen manager and camera node as arguments. I think when player implementation is done will no longer need camera 
+LevelScene::LevelScene(Ogre::SceneManager& scnMgr) : scnMgr(scnMgr)
+{ // takes screen manager as an argument
     
 }
 
@@ -14,20 +14,6 @@ void LevelScene::load()
 
     createTerrain(); // create the level environment
     createLighting(); // create the lighting
-    positionCamera(); // position the camera correctly
-
-    // create test object
-    Ogre::Entity* baby = scnMgr.createEntity("baby.mesh"); // create entity mesh
-    Ogre::SceneNode* babyNode = rootNode->createChildSceneNode(); // create the scene node
-    babyNode->attachObject(baby); // attach the mesh to the node
-    gameObjects.push_back(std::make_unique<GameObject>(babyNode)); // create the game object and then add it to the vector
-
-}
-
-void LevelScene::positionCamera()
-{
-    cameraNode.setPosition(0, 8, 15);
-    cameraNode.lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
 }
 
 void LevelScene::createLighting()
