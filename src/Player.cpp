@@ -47,3 +47,4 @@ void Player::movePlayer(float deltaTime)
         transform.SetRotation(targetRotation);
     }
 }
+
