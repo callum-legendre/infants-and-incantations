@@ -22,9 +22,9 @@ class GameSession
 
     private:
     // properties
-    std::unique_ptr<Player> player;
-    std::unique_ptr<PlayerCamera> playerCamera;
-    std::unique_ptr<LevelScene> currentScene;
+    std::unique_ptr<Player> player = nullptr;
+    std::unique_ptr<PlayerCamera> playerCamera = nullptr;
+    std::unique_ptr<LevelScene> currentScene = nullptr;
     Ogre::SceneManager* scnMgr = nullptr;
 
     // methods

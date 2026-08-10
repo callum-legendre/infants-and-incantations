@@ -16,9 +16,6 @@
 #include <SDL2/SDL_syswm.h>
 
 // other includes from this project
-#include "LevelScene.h"
-#include "Player.h"
-#include "PlayerCamera.h"
 
 // declaration of engine class
 class Engine
@@ -49,15 +46,6 @@ private:
     // resource path
     std::filesystem::path resourcePath;
 
-    // active level
-    std::unique_ptr<LevelScene> level;
-
-    // player object
-    std::unique_ptr<Player> player;
-
-    // player camera object
-    std::unique_ptr<PlayerCamera> camera;
-
     void SDLInitialise();
     void createOgreWindow();
     void viewportInitialise();
@@ -65,8 +53,6 @@ private:
     void prepareMaterials();
     std::filesystem::path getResourceDirectory() const;
     void RTSSInitialise();
-    void loadLevel();
-    void createPlayer();
 };
 
 #endif
