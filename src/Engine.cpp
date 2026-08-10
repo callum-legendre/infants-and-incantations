@@ -43,22 +43,9 @@ bool Engine::Initialise()
 
     prepareMaterials();
 
-    createPlayer();
-
     viewportInitialise();
 
-    loadLevel();
-
     return true;
-}
-
-void Engine::loadLevel()
-{
-    // instanciate the level
-    level = std::make_unique<LevelScene>(*scnMgr);
-    
-    // load the level
-    level->load();
 }
 
 void Engine::SDLInitialise()
@@ -102,10 +89,7 @@ void Engine::Run()
         // clamp deltatime to ensure no funny buisness when unusually large values occur
         const float clampedTime = std::min(deltaTime, 0.1f);
 
-        // update the level, player, and camera
-        level->update(clampedTime);
-        player->update(clampedTime);
-        camera->update(clampedTime);
+        // update the game
 
         // SDL event variable, whenever something happens to the window it will be reflected in this variable
         SDL_Event e;
@@ -147,21 +131,7 @@ void Engine::Run()
 
 void Engine::viewportInitialise()
 {
-    // also need to tell where we are
-    Ogre::SceneNode* cameraNode = scnMgr->getRootSceneNode()->createChildSceneNode();
-    cameraNode->setPosition(0, 0, 15);
-    cameraNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
- 
-    // create the camera
-    Ogre::Camera* cam = scnMgr->createCamera("PlayerCamera");
-    cam->setNearClipDistance(5); // specific to this sample
-    cam->setAutoAspectRatio(true);
-    cameraNode->attachObject(cam);
-
-    // create the camera GameObject
-    camera = std::make_unique<PlayerCamera>(cameraNode, player->GetSceneNode());
- 
-    // and tell it to render into the main window
+    // get the camera and tell it to render that camera into the window
     vp = mRenderWindow->addViewport(cam);
     vp->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
     vp->setMaterialScheme(Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME); // tell viewport to render with RTSS techniques instead of default
@@ -181,9 +151,6 @@ void Engine::Shutdown()
         Ogre::RTShader::ShaderGenerator::destroy();
         shadergen = nullptr;
     }
-
-    // unload the active level
-    level->unload();
 
     // null out the screen manager
     scnMgr = nullptr;
@@ -289,15 +256,4 @@ void Engine::prepareMaterials()
             Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME,
             *material);
     }
-}
-
-void Engine::createPlayer()
-{
-    Ogre::Entity* playerMesh = scnMgr->createEntity("baby.mesh"); // create entity mesh
-
-    Ogre::SceneNode* playerNode = scnMgr->getRootSceneNode()->createChildSceneNode("PlayerNode"); // create the player node
-
-    playerNode->attachObject(playerMesh); // attach the mesh to the node
-    
-    player = std::make_unique<Player>(playerNode); // create the player object using the ogre node
 }
