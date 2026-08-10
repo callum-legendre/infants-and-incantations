@@ -50,8 +50,8 @@ FetchContent_MakeAvailable(ogre)
 
 add_executable(iai MACOSX_BUNDLE
     src/Main.cpp
-    src/Engine.cpp
-    src/EngineMac.mm
+    src/iaiEngine.cpp
+    src/iaiEngineMac.mm
     src/LevelScene.cpp
     src/Player.cpp
     src/PlayerCamera.cpp

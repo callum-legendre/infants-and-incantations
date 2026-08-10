@@ -1,5 +1,4 @@
-#include <iostream>
-#include "Engine.h"
+#include "iaiEngine.h"
 
 int main()
 {
@@ -11,7 +10,7 @@ int main()
 
     engine.Run();
 
-    engine.Shutdown();
+    // rely on the destructor to correctly destroy the engine
 
     return 0;
 }

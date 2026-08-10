@@ -1,4 +1,4 @@
-#include "Engine.h"
+#include "iaiEngine.h"
 
 #import <Cocoa/Cocoa.h>
 #import <mach-o/dyld.h>
@@ -31,14 +31,6 @@ void Engine::createOgreWindow()
             h,
             false,
             &params);
-        
-    // debug
-    std::cout << "DEBUG: "
-    << mRenderWindow->getWidth()
-    << " "
-    << mRenderWindow->getHeight()
-    << std::endl;
-    // end debug 
 
     if (!mRenderWindow)
         throw std::runtime_error("Failed to create Ogre render window.");
