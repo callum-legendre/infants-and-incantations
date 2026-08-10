@@ -12,6 +12,7 @@ The class that handles the actual game session. This is seperated from engine to
 namespace Ogre
 {
     class SceneManager;
+    class Camera;
 }
 
 class GameSession
@@ -19,6 +20,8 @@ class GameSession
     public:
     GameSession(Ogre::SceneManager* scnMgr); // constructor
     void update(float deltaTime); // update function
+    Ogre::Camera* GetCamera(); // method that gets the camera, used in engine to assign the camera to the viewport
+    ~GameSession() = default; // destructor
 
     private:
     // properties
@@ -31,8 +34,7 @@ class GameSession
     void CreatePlayer();
     void CreatePlayerCamera();
     void LoadLevel();
-
-}
+};
 
 
 #endif

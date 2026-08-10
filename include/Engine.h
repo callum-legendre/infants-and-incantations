@@ -16,6 +16,7 @@
 #include <SDL2/SDL_syswm.h>
 
 // other includes from this project
+#include "GameSession.h"
 
 // declaration of engine class
 class Engine
@@ -45,6 +46,9 @@ private:
 
     // resource path
     std::filesystem::path resourcePath;
+
+    // other objects
+    std::unique_ptr<GameSession> session;
 
     void SDLInitialise();
     void createOgreWindow();

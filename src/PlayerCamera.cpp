@@ -1,4 +1,6 @@
 #include "PlayerCamera.h"
+#include <OgreVector3.h>
+#include <OgreSceneNode.h>
 
 void PlayerCamera::update(float deltaTime)
 {

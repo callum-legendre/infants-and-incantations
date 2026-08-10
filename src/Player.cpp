@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include <OgreVector.h>
+#include <OgreSceneNode.h>
 
 void Player::update(float deltaTime)
 {
