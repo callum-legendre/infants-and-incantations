@@ -43,6 +43,8 @@ bool Engine::Initialise()
 
     prepareMaterials();
 
+    session = std::make_unique<GameSession>(scnMgr);
+
     viewportInitialise();
 
     return true;
@@ -90,6 +92,7 @@ void Engine::Run()
         const float clampedTime = std::min(deltaTime, 0.1f);
 
         // update the game
+        session->update(clampedTime);
 
         // SDL event variable, whenever something happens to the window it will be reflected in this variable
         SDL_Event e;
@@ -131,7 +134,10 @@ void Engine::Run()
 
 void Engine::viewportInitialise()
 {
-    // get the camera and tell it to render that camera into the window
+    // get the camera
+    Ogre::Camera* cam = session->GetCamera();
+
+    // tell it to render that camera into the window
     vp = mRenderWindow->addViewport(cam);
     vp->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
     vp->setMaterialScheme(Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME); // tell viewport to render with RTSS techniques instead of default
@@ -151,6 +157,9 @@ void Engine::Shutdown()
         Ogre::RTShader::ShaderGenerator::destroy();
         shadergen = nullptr;
     }
+
+    // end the game session
+    session.reset();
 
     // null out the screen manager
     scnMgr = nullptr;

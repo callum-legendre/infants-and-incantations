@@ -1,6 +1,10 @@
 #include "GameSession.h"
 
-GameSession::GameSession(Ogre::SceneManager* scnMgr) : scnMgr(scnMgr);
+#include <OgreSceneManager.h>
+#include <OgreEntity.h>
+#include <OgreCamera.h>
+
+GameSession::GameSession(Ogre::SceneManager* scnMgr) : scnMgr(scnMgr)
 {
     CreatePlayer();
     CreatePlayerCamera();
@@ -18,7 +22,7 @@ void GameSession::CreatePlayer()
     player = std::make_unique<Player>(playerNode); // create the player object using the ogre node
 }
 
-void GameSession:CreatePlayerCamera()
+void GameSession::CreatePlayerCamera()
 {
     // create the camera node and move it to correct starting position
     Ogre::SceneNode* cameraNode = scnMgr->getRootSceneNode()->createChildSceneNode();
@@ -32,7 +36,7 @@ void GameSession:CreatePlayerCamera()
     cameraNode->attachObject(cam);
 
     // create the camera GameObject
-    camera = std::make_unique<PlayerCamera>(cameraNode, player->GetSceneNode());
+    playerCamera = std::make_unique<PlayerCamera>(cameraNode, player->GetSceneNode());
 }
 
 void GameSession::LoadLevel()
@@ -49,10 +53,15 @@ void GameSession::LoadLevel()
     currentScene->load();
 }
 
-void GameSession update(float deltaTime)
+void GameSession::update(float deltaTime)
 {
     // update the player and the player camera
     player->update(deltaTime);
     playerCamera->update(deltaTime);
     currentScene->update(deltaTime);
+}
+
+Ogre::Camera* GameSession::GetCamera()
+{
+    return static_cast<Ogre::Camera*>(playerCamera->GetSceneNode()->getAttachedObject("PlayerCamera"));
 }
