@@ -7,8 +7,10 @@ All other non-specific frame updates that are needed are done in the update() fu
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-#include <OgreSceneNode.h>
-
+namespace Ogre
+{
+    class SceneNode;
+}
 
 class GameObject
 {
