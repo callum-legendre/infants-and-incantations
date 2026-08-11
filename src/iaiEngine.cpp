@@ -43,7 +43,7 @@ bool Engine::Initialise()
 
     prepareMaterials();
 
-    session = std::make_unique<GameSession>(scnMgr);
+    session = std::make_unique<GameSession>(*scnMgr);
 
     viewportInitialise();
 
