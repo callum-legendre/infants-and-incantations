@@ -71,14 +71,14 @@ void LevelScene::unload()
         return;
     }
 
-    // destroy everything in the scene
+    // GameObjects own their scene nodes, so destroy them before the level root.
+    gameObjects.clear();
+
+    // destroy everything else in the scene
     rootNode->destroyAllChildrenAndObjects();
 
     // destroy the pseudo root
     scnMgr.destroySceneNode(rootNode);
-
-    // remove all gameobjects stored in the vector safely
-    gameObjects.clear();
 
     // set relevant pointers to null
     rootNode = nullptr;

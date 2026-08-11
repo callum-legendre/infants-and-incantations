@@ -23,7 +23,6 @@ class PlayerCamera : public GameObject
     private:
     // properties
     Ogre::SceneNode* playerNode = nullptr; // stores a reference to the player node for camera positioning relative to the player
-
 };
 
 #endif

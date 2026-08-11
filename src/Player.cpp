@@ -6,7 +6,7 @@
 #include <OgreEntity.h>
 #include <OgreBullet.h> 
 
-Player::Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics) : GameObject(scnMgr.getRootSceneNode()->createChildSceneNode("PlayerNode"))
+Player::Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics) : GameObject(scnMgr, scnMgr.getRootSceneNode()->createChildSceneNode("PlayerNode"))
 { // creates the player node and passes it to the game object constructor before doing anything else
 
     Ogre::Entity* playerMesh = scnMgr.createEntity("baby.mesh"); // create entity mesh

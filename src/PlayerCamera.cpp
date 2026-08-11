@@ -3,7 +3,7 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 
-PlayerCamera::PlayerCamera(Ogre::SceneManager& scnMgr) : GameObject(scnMgr.getRootSceneNode()->createChildSceneNode()), playerNode(scnMgr.getSceneNode("PlayerNode"))
+PlayerCamera::PlayerCamera(Ogre::SceneManager& scnMgr) : GameObject(scnMgr, scnMgr.getRootSceneNode()->createChildSceneNode()), playerNode(scnMgr.getSceneNode("PlayerNode"))
 { // create the scene node and pass it to the GameObject constructor, also get the player node and store it in the playerNode property
 
     // move camera node to correct starting position
