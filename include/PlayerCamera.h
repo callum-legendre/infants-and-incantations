@@ -9,13 +9,13 @@ Defines the GameObject that contains the camera which follows the player.
 namespace Ogre
 {
     class SceneNode;
+    class SceneManager;
 }
 
 class PlayerCamera : public GameObject
 {
     public:
-    // inherted methods
-    PlayerCamera(Ogre::SceneNode* cameraNode, Ogre::SceneNode* playerNode) : GameObject(cameraNode), playerNode(playerNode) {} // cpmstructor
+    PlayerCamera(Ogre::SceneManager& scnMgr); // constructor
 
     // overriden methods
     void update(float deltaTime) override;
