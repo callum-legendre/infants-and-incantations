@@ -60,10 +60,19 @@ void Player::movePlayer(float deltaTime)
         // update the rigidbody velocity
         btVector3 velocity = rb->getLinearVelocity();
         rb->setLinearVelocity(btVector3(direction.x * moveSpeed, velocity.y(), direction.z * moveSpeed));
-        rb->activate(true);
 
-        // turn model in direction of movement
+        // get the target rotation of the player
         Ogre::Quaternion targetRotation = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
-        GetSceneNode()->setOrientation(targetRotation);
+
+        // convert the target rotation into a bullet transform
+        btTransform transform = rb->getCenterOfMassTransform();
+        transform.setRotation(Ogre::Bullet::convert(targetRotation));
+
+        // apply the transform to the rigidbody
+        rb->setCenterOfMassTransform(transform);
+        rb->getMotionState()->setWorldTransform(transform);
+
+        // mark the player as active
+        rb->activate(true);
     }
 }
