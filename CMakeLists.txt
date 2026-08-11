@@ -56,6 +56,7 @@ FetchContent_MakeAvailable(ogre)
 
 add_executable(iai MACOSX_BUNDLE
     src/Main.cpp
+    src/GameObject.cpp
     src/iaiEngine.cpp
     src/iaiEngineMac.mm
     src/LevelScene.cpp
