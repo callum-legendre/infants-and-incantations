@@ -14,13 +14,13 @@ It exists outside of all of the LevelScenes, so it survives loading and unloadin
 namespace Ogre
 {
     class SceneNode;
+    class SceneManager;
 }
 
 class Player : public GameObject // inherits from GameObject class
 {
     public:
-    // inherited methods
-    Player(Ogre::SceneNode* playerNode) : GameObject(playerNode)  {}; // constructor
+    Player(Ogre::SceneManager& scnMgr); // constructor
 
     // overriden methods
     void update(float deltaTime) override; // update function

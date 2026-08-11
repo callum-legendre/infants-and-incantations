@@ -2,6 +2,16 @@
 
 #include <OgreVector.h>
 #include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreEntity.h>
+
+Player::Player(Ogre::SceneManager& scnMgr) : GameObject(scnMgr.getRootSceneNode()->createChildSceneNode("PlayerNode"))
+{ // creates the player node and passes it to the game object constructor before doing anything else
+
+    Ogre::Entity* playerMesh = scnMgr.createEntity("baby.mesh"); // create entity mesh
+
+    sceneNode->attachObject(playerMesh); // attach the mesh to the node
+}
 
 void Player::update(float deltaTime)
 {
