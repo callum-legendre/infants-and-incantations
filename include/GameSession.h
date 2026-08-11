@@ -18,7 +18,7 @@ namespace Ogre
 class GameSession
 {
     public:
-    GameSession(Ogre::SceneManager* scnMgr); // constructor
+    GameSession(Ogre::SceneManager& scnMgr); // constructor
     void update(float deltaTime); // update function
     Ogre::Camera* GetCamera(); // method that gets the camera, used in engine to assign the camera to the viewport
     ~GameSession() = default; // destructor
@@ -28,11 +28,9 @@ class GameSession
     std::unique_ptr<Player> player = nullptr;
     std::unique_ptr<PlayerCamera> playerCamera = nullptr;
     std::unique_ptr<LevelScene> currentScene = nullptr;
-    Ogre::SceneManager* scnMgr = nullptr;
+    Ogre::SceneManager& scnMgr;
 
     // methods
-    void CreatePlayer();
-    void CreatePlayerCamera();
     void LoadLevel();
 };
 
