@@ -1,11 +1,10 @@
 #include "LevelScene.h" // header file
 
 #include <Ogre.h>
+#include <OgreBullet.h>
 
-LevelScene::LevelScene(Ogre::SceneManager& scnMgr) : scnMgr(scnMgr)
-{ // takes screen manager as an argument
-    
-}
+LevelScene::LevelScene(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics) : scnMgr(scnMgr), worldPhysics(worldPhysics)
+{} // takes screen manager and the game dynamic as an argument
 
 void LevelScene::load()
 {
@@ -60,6 +59,9 @@ void LevelScene::createTerrain()
     // create new node and attach the plane onto it
     terrainNode = rootNode->createChildSceneNode("LevelTerrainNode");
     terrainNode->attachObject(terrainEntity);
+
+    // create and attach the rigidbody for the terrain
+    worldPhysics.addRigidBody(0.0f, terrainEntity, Ogre::Bullet::CT_TRIMESH); // TEMPORARY FOR TEST SCENE
 }
 
 void LevelScene::unload()

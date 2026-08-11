@@ -11,16 +11,23 @@ It exists outside of all of the LevelScenes, so it survives loading and unloadin
 #include "GameObject.h"
 #include "InputState.h"
 
+// forward declarations
+class btRigidBody;
 namespace Ogre
 {
     class SceneNode;
     class SceneManager;
+
+    namespace Bullet
+    {
+        class DynamicsWorld;
+    }
 }
 
 class Player : public GameObject // inherits from GameObject class
 {
     public:
-    Player(Ogre::SceneManager& scnMgr); // constructor
+    Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics); // constructor
 
     // overriden methods
     void update(float deltaTime) override; // update function
@@ -33,6 +40,8 @@ class Player : public GameObject // inherits from GameObject class
 
     // properties
     static constexpr float moveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
+
+    btRigidBody* rb = nullptr;
 };
 
 #endif
