@@ -30,10 +30,10 @@ class GameSession
 
     private:
     // properties
+    std::unique_ptr<Ogre::Bullet::DynamicsWorld> worldPhysics = nullptr;
     std::unique_ptr<Player> player = nullptr;
     std::unique_ptr<PlayerCamera> playerCamera = nullptr;
     std::unique_ptr<LevelScene> currentScene = nullptr;
-    std::unique_ptr<Ogre::Bullet::DynamicsWorld> worldPhysics = nullptr;
     Ogre::SceneManager& scnMgr;
 
     // methods
