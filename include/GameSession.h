@@ -13,6 +13,11 @@ namespace Ogre
 {
     class SceneManager;
     class Camera;
+    
+    namespace Bullet
+    {
+        class DynamicsWorld;
+    }
 }
 
 class GameSession
@@ -21,10 +26,11 @@ class GameSession
     GameSession(Ogre::SceneManager& scnMgr); // constructor
     void update(float deltaTime); // update function
     Ogre::Camera* GetCamera(); // method that gets the camera, used in engine to assign the camera to the viewport
-    ~GameSession() = default; // destructor
+    ~GameSession(); // destructor
 
     private:
     // properties
+    std::unique_ptr<Ogre::Bullet::DynamicsWorld> worldPhysics = nullptr;
     std::unique_ptr<Player> player = nullptr;
     std::unique_ptr<PlayerCamera> playerCamera = nullptr;
     std::unique_ptr<LevelScene> currentScene = nullptr;

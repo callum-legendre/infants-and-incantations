@@ -4,13 +4,20 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <OgreBullet.h> 
 
-Player::Player(Ogre::SceneManager& scnMgr) : GameObject(scnMgr.getRootSceneNode()->createChildSceneNode("PlayerNode"))
+Player::Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics) : GameObject(scnMgr, scnMgr.getRootSceneNode()->createChildSceneNode("PlayerNode"))
 { // creates the player node and passes it to the game object constructor before doing anything else
 
     Ogre::Entity* playerMesh = scnMgr.createEntity("baby.mesh"); // create entity mesh
 
     sceneNode->attachObject(playerMesh); // attach the mesh to the node
+
+    sceneNode->setPosition(0.0f, 2.0f, 0.0f); // move the player above the plane so it does not clip through
+
+    rb = worldPhysics.addRigidBody(10.0f, playerMesh, Ogre::Bullet::CT_CAPSULE); // create and attach the rigid body
+
+    rb->setAngularFactor(btVector3(0, 0, 0)); // prevent the capsule from topping which makes the baby roll
 }
 
 void Player::update(float deltaTime)
@@ -50,12 +57,22 @@ void Player::movePlayer(float deltaTime)
         // normalise direction
         direction.normalise();
 
-        // update the player's location
-        GetSceneNode()->translate(direction * deltaTime * moveSpeed);
+        // update the rigidbody velocity
+        btVector3 velocity = rb->getLinearVelocity();
+        rb->setLinearVelocity(btVector3(direction.x * moveSpeed, velocity.y(), direction.z * moveSpeed));
 
-        // turn model in direction of movement
+        // get the target rotation of the player
         Ogre::Quaternion targetRotation = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
-        GetSceneNode()->setOrientation(targetRotation);
+
+        // convert the target rotation into a bullet transform
+        btTransform transform = rb->getCenterOfMassTransform();
+        transform.setRotation(Ogre::Bullet::convert(targetRotation));
+
+        // apply the transform to the rigidbody
+        rb->setCenterOfMassTransform(transform);
+        rb->getMotionState()->setWorldTransform(transform);
+
+        // mark the player as active
+        rb->activate(true);
     }
 }
-

@@ -40,6 +40,12 @@ set(OGRE_BUILD_RENDERSYSTEM_GL OFF CACHE BOOL "" FORCE)
 set(OGRE_BUILD_RENDERSYSTEM_GL3PLUS ON CACHE BOOL "" FORCE)
 set(OGRE_BUILD_PLUGIN_FREEIMAGE ON CACHE BOOL "" FORCE)
 
+#
+# Build Bullet for the physics engine
+#
+set(OGRE_BUILD_DEPENDENCIES ON CACHE BOOL "" FORCE)
+set(OGRE_BUILD_COMPONENT_BULLET ON CACHE BOOL "" FORCE)
+
 FetchContent_MakeAvailable(ogre)
 
 #
@@ -50,6 +56,7 @@ FetchContent_MakeAvailable(ogre)
 
 add_executable(iai MACOSX_BUNDLE
     src/Main.cpp
+    src/GameObject.cpp
     src/iaiEngine.cpp
     src/iaiEngineMac.mm
     src/LevelScene.cpp
@@ -74,6 +81,7 @@ target_link_libraries(iai PRIVATE
     OgreBites
     OgreOverlay
     OgreRTShaderSystem
+    OgreBullet
 )
 
 add_custom_command(TARGET iai POST_BUILD
