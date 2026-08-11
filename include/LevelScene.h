@@ -9,13 +9,18 @@ namespace Ogre
     class SceneManager;
     class SceneNode;
     class Entity;
+
+    namespace Bullet
+    {
+        class DynamicsWorld;
+    }
 }
 
 class LevelScene
 {
 public:
     // constructor
-    explicit LevelScene(Ogre::SceneManager& scnMgr);
+    explicit LevelScene(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics);
     ~LevelScene();
 
     // load and unload functions initialise and shutdown the level
@@ -26,8 +31,9 @@ public:
     void update(float deltaTime);
 
 private:
-    // proporties of the level passed from Engine
+    // world properties
     Ogre::SceneManager& scnMgr;
+    Ogre::Bullet::DynamicsWorld& worldPhysics;
 
     // non-passed proporties of the level
     Ogre::SceneNode* rootNode = nullptr;
