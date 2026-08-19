@@ -1,4 +1,8 @@
 PluginFolder=@PLUGIN_FOLDER@
 
+# graphics plugins
 Plugin=Codec_FreeImage
 Plugin=RenderSystem_GL3Plus
+
+# .scene plugin for loading the scene
+Plugin=Plugin_DotScene

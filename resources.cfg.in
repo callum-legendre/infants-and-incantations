@@ -12,6 +12,7 @@ FileSystem=@OGRE_MEDIA_DIR@/Main
 [General]
 FileSystem=assets/mesh
 FileSystem=assets/material
+FileSystem=assets/scene
 
 [RTShaderLib]
 FileSystem=@OGRE_MEDIA_DIR@/RTShaderLib
