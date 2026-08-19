@@ -18,7 +18,10 @@ void LevelScene::load()
     // create pseudo root node for the level
     rootNode = scnMgr.getRootSceneNode()->createChildSceneNode("LevelRoot");
 
-    createTerrain(); // create the level environment
+    // load the DotScene
+    rootNode->loadChildren("testScene.scene");
+
+    // createTerrain(); // create the level environment
     createLighting(); // create the lighting
 }
 
