@@ -41,7 +41,7 @@ private:
     std::vector<std::unique_ptr<GameObject>> gameObjects;
     
     // methods
-    void createTerrain();
+    void createColliders(Ogre::SceneNode* node);
     void createLighting();
 };
 

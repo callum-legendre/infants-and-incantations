@@ -23,6 +23,8 @@ FetchContent_Declare(
     ogre
     GIT_REPOSITORY https://github.com/OGRECave/ogre.git
     GIT_TAG v14.5.2
+    GIT_SHALLOW true
+    GIT_PROGRESS true
 )
 
 #
