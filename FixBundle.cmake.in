@@ -11,11 +11,13 @@ message("Fixing bundle: ${APP_BUNDLE}")
 # that are not part of a valid distributable framework layout.
 file(REMOVE
     "${APP_BUNDLE}/Contents/Frameworks/Codec_FreeImage.framework/Codec_FreeImage.framework"
+    "${APP_BUNDLE}/Contents/Frameworks/Plugin_DotScene.framework/Plugin_DotScene.framework"
     "${APP_BUNDLE}/Contents/Frameworks/RenderSystem_GL3Plus.framework/RenderSystem_GL3Plus.framework"
 )
 
 set(RUNTIME_PLUGINS
     "${APP_BUNDLE}/Contents/Frameworks/Codec_FreeImage.framework/Codec_FreeImage"
+    "${APP_BUNDLE}/Contents/Frameworks/Plugin_DotScene.framework/Plugin_DotScene"
     "${APP_BUNDLE}/Contents/Frameworks/RenderSystem_GL3Plus.framework/RenderSystem_GL3Plus"
 )
 

@@ -47,6 +47,7 @@ set(OGRE_BUILD_RENDERSYSTEM_METAL OFF CACHE BOOL "" FORCE)
 set(OGRE_BUILD_RENDERSYSTEM_GL OFF CACHE BOOL "" FORCE)
 set(OGRE_BUILD_RENDERSYSTEM_GL3PLUS ON CACHE BOOL "" FORCE)
 set(OGRE_BUILD_PLUGIN_FREEIMAGE ON CACHE BOOL "" FORCE)
+set(OGRE_BUILD_PLUGIN_DOT_SCENE ON CACHE BOOL "" FORCE)
 
 #
 # Build Bullet for the physics engine
@@ -95,6 +96,14 @@ target_link_libraries(iai PRIVATE
     OgreOverlay
     OgreRTShaderSystem
     OgreBullet
+)
+
+# These plugins are loaded from plugins.cfg rather than linked into iai, so
+# CMake cannot infer that their framework binaries must exist before install.
+add_dependencies(iai
+    Codec_FreeImage
+    Plugin_DotScene
+    RenderSystem_GL3Plus
 )
 
 add_custom_command(TARGET iai POST_BUILD
@@ -242,6 +251,13 @@ install(
 install(
     DIRECTORY
         ${OGRE_PLUGIN_DIR}/Codec_FreeImage.framework
+    DESTINATION
+        iai.app/Contents/Frameworks
+)
+
+install(
+    DIRECTORY
+        ${OGRE_PLUGIN_DIR}/Plugin_DotScene.framework
     DESTINATION
         iai.app/Contents/Frameworks
 )
