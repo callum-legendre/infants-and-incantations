@@ -4,7 +4,6 @@ A solo C++ vertical-slice prototype exploring game-engine architecture, real-tim
 
 ## Overview
 
-*Infants and Incantations* is a real-time action RPG about a wizard baby escaping from a demonically managed daycare. The prototype establishes the technical foundation for a playable combat encounter while keeping the scope focused on engine integration and core gameplay systems.
 
 The project is in active development and currently provides a controllable, physics-driven player inside a rendered test level.
 
