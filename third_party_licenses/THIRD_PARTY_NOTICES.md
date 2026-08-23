@@ -52,8 +52,4 @@ FreeImage is built as a dependency of OGRE's `Codec_FreeImage` plugin.
 
 The project does not modify FreeImage. Its original source is available from the link above under the terms of the FreeImage Public License 1.0.
 
-## Third-party models
-
-Model sources and their stated usage terms are recorded in `Model-Sources.txt`, which is distributed alongside these notices. The crawling baby and crib source pages mark those models as licensed for personal use. Attribution for the Sinbad character model is included with the asset in `assets/material/README.txt`.
-
 These notices apply only to the identified third-party components. They do not grant a licence for the original *Infants and Incantations* source code or assets.

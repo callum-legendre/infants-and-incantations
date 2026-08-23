@@ -138,7 +138,6 @@ open install/iai.app
 
 ## Known Limitations
 
-- Only placeholder assets are in use as this is a solo project and I have very limited skill with blender
 - The prototype is not yet a complete combat encounter; spell casting and enemy behaviour remain in development.
 - The project has only been built and tested on macOS. Windows and Linux are not currently supported.
 - The current level is a test environment used to develop movement, rendering, physics, and scene systems.
@@ -150,5 +149,4 @@ Full third-party licence texts are stored in [`third_party_licenses`](third_part
 - [OGRE](https://www.ogre3d.org/) — rendering engine
 - [SDL](https://github.com/libsdl-org/SDL) — windowing and input
 - [Bullet Physics](https://github.com/bulletphysics/bullet3) — physics through OgreBullet
-- [3D model sources](Model-Sources.txt) — third-party model sources and usage terms
 - [Third-party licences](third_party_licenses/THIRD_PARTY_NOTICES.md) — complete notices for redistributed software dependencies
