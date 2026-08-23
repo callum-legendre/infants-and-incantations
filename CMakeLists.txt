@@ -107,6 +107,12 @@ add_custom_command(TARGET iai POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/assets"
         "$<TARGET_BUNDLE_CONTENT_DIR:iai>/Resources/assets"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/third_party_licenses"
+        "$<TARGET_BUNDLE_CONTENT_DIR:iai>/Resources/Licenses"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/Model-Sources.txt"
+        "$<TARGET_BUNDLE_CONTENT_DIR:iai>/Resources/Licenses/Model-Sources.txt"
 )
 
 #
@@ -218,6 +224,16 @@ install(DIRECTORY
     ${ogre_SOURCE_DIR}/Media/Main
     ${ogre_SOURCE_DIR}/Media/RTShaderLib
     DESTINATION iai.app/Contents/Resources/ogre-media
+)
+
+install(DIRECTORY
+    ${CMAKE_SOURCE_DIR}/third_party_licenses/
+    DESTINATION iai.app/Contents/Resources/Licenses
+)
+
+install(FILES
+    ${CMAKE_SOURCE_DIR}/Model-Sources.txt
+    DESTINATION iai.app/Contents/Resources/Licenses
 )
 
 
