@@ -8,6 +8,7 @@ FileSystem=@OGRE_MAIN_RESOURCE_PATH@
 [General]
 FileSystem=assets/mesh
 FileSystem=assets/material
+FileSystem=assets/scene
 
 [RTShaderLib]
 FileSystem=@OGRE_RTSS_RESOURCE_PATH@

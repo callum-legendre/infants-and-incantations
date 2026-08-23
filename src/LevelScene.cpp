@@ -9,6 +9,7 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <OgreBullet.h>
+#include <OgreLogManager.h>
 
 LevelScene::LevelScene(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics) : scnMgr(scnMgr), worldPhysics(worldPhysics)
 {} // takes screen manager and the game dynamic as an argument
@@ -18,7 +19,10 @@ void LevelScene::load()
     // create pseudo root node for the level
     rootNode = scnMgr.getRootSceneNode()->createChildSceneNode("LevelRoot");
 
-    createTerrain(); // create the level environment
+    // load the DotScene
+    rootNode->loadChildren("testScene.scene");
+
+    createColliders(rootNode); // create the colliders and attach them to all objects that need it
     createLighting(); // create the lighting
 }
 
@@ -37,38 +41,58 @@ void LevelScene::createLighting()
     lightNode->attachObject(light);
 }
 
-void LevelScene::createTerrain() 
+void LevelScene::createColliders(Ogre::SceneNode* node)
 {
-    // create the plane object
-    Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+    // iterate through all attached objects of the node that was passed in
+    for (const auto& entry : node->getAttachedObjects())
+    {
+        // get the next object
+        auto* entity = dynamic_cast<Ogre::Entity*>(entry);
 
-    // create the plane mesh
-    Ogre::MeshManager::getSingleton().createPlane(
-        "LevelTerrainMesh",
-        Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        plane,
-        100.0f,
-        100.0f,
-        20,
-        20,
-        true,
-        1,
-        10.0f,
-        10.0f,
-        Ogre::Vector3::UNIT_Z);
+        // if not an entity, then go to the next object
+        if (!entity) continue;
 
-    // create the entity for the terrain mesh
-    Ogre::Entity* terrainEntity = scnMgr.createEntity("LevelTerrainEntity", "LevelTerrainMesh");
+        // get the value of the object binding that is "bulletCollider"
+        const Ogre::Any& value = entity->getUserObjectBindings().getUserAny("bulletCollider");
 
-    // set the material for the entity
-    terrainEntity->setMaterialName("Terrain");
+        // if there is no value then skip
+        if (!value.has_value()) continue;
 
-    // create new node and attach the plane onto it
-    terrainNode = rootNode->createChildSceneNode("LevelTerrainNode");
-    terrainNode->attachObject(terrainEntity);
+        // get the string value of the object binding
+        const Ogre::String collider = Ogre::any_cast<Ogre::String>(value);
 
-    // create and attach the rigidbody for the terrain
-    worldPhysics.addRigidBody(0.0f, terrainEntity, Ogre::Bullet::CT_TRIMESH); // TEMPORARY FOR TEST SCENE
+        // get the correct collider type from the string
+        Ogre::Bullet::ColliderType type;
+        if (collider == "box")
+            type = Ogre::Bullet::CT_BOX;
+        else if (collider == "trimesh")
+            type = Ogre::Bullet::CT_TRIMESH;
+        else if (collider == "hull")
+            type = Ogre::Bullet::CT_HULL;
+        else
+        {
+            // throw an error if there is a different value in there
+            Ogre::LogManager::getSingleton().logWarning(
+                "Invalid bulletCollider value '" + collider +
+                "' on entity '" + entity->getName() + "'");
+            continue;
+        }
+
+        // create the rigidbodys attached to the entity
+        worldPhysics.addRigidBody(0.0f, entity, type);
+
+        // print a success message
+        Ogre::LogManager::getSingleton().logMessage(
+            "Added " + collider + " collider to " +
+            entity->getName());
+    }
+
+    // iterate through each subtree of the current node and do the same
+    for (const auto& entry : node->getChildren())
+    {
+        createColliders(
+            static_cast<Ogre::SceneNode*>(entry));
+    }
 }
 
 void LevelScene::unload()
