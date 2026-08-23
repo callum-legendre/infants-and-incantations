@@ -122,7 +122,7 @@ From the repository root, run:
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
-cmake --build build --parallel
+cmake --build build
 cmake --install build --prefix install
 ```
 
