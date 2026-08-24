@@ -27,6 +27,7 @@ In progress:
 
 Planned for the vertical slice:
 
+- Dynamic, physics based level objects that the player can manipulate
 - Pathfinding for one enemy type
 - A basic enemy melee attack
 - A complete player-versus-enemy combat encounter
