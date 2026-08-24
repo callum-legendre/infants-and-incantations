@@ -7,8 +7,33 @@ get_filename_component(APP_BUNDLE "${APP_BUNDLE}" ABSOLUTE)
 
 message("Fixing bundle: ${APP_BUNDLE}")
 
+# OGRE's generated plugin frameworks contain absolute, self-referential links
+# that are not part of a valid distributable framework layout.
+file(REMOVE
+    "${APP_BUNDLE}/Contents/Frameworks/Codec_FreeImage.framework/Codec_FreeImage.framework"
+    "${APP_BUNDLE}/Contents/Frameworks/Plugin_DotScene.framework/Plugin_DotScene.framework"
+    "${APP_BUNDLE}/Contents/Frameworks/RenderSystem_GL3Plus.framework/RenderSystem_GL3Plus.framework"
+)
+
+set(RUNTIME_PLUGINS
+    "${APP_BUNDLE}/Contents/Frameworks/Codec_FreeImage.framework/Codec_FreeImage"
+    "${APP_BUNDLE}/Contents/Frameworks/Plugin_DotScene.framework/Plugin_DotScene"
+    "${APP_BUNDLE}/Contents/Frameworks/RenderSystem_GL3Plus.framework/RenderSystem_GL3Plus"
+)
+
 fixup_bundle(
     "${APP_BUNDLE}"
-    ""
-    "/Users/callumlegendre/Documents/GitHub/infants-and-incantations/build/_deps/ogre-build/lib/macosx"
+    "${RUNTIME_PLUGINS}"
+    "@OGRE_PLUGIN_DIR@"
 )
+
+# fixup_bundle rewrites Mach-O files, which invalidates their signatures.
+# Apply an ad-hoc signature so the locally built app can be launched by macOS.
+execute_process(
+    COMMAND "@CODESIGN_EXECUTABLE@" --force --deep --sign - "${APP_BUNDLE}"
+    RESULT_VARIABLE CODESIGN_RESULT
+)
+
+if(NOT CODESIGN_RESULT EQUAL 0)
+    message(FATAL_ERROR "Failed to sign ${APP_BUNDLE}")
+endif()
