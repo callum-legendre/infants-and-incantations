@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- exporter: blender2ogre 0.9.0 -->
-<!-- export_time: Mon, 24 Aug 2026 14:28:40 +0000 -->
+<!-- export_time: Mon, 24 Aug 2026 14:42:30 +0000 -->
 <!-- blender_version: 5.1.2 (release; Darwin) -->
-<!-- previous_export_time: Mon, 24 Aug 2026 14:27:42 +0000 -->
+<!-- previous_export_time: Mon, 24 Aug 2026 14:28:40 +0000 -->
 <scene author="callumlegendre" formatVersion="1.1" >
   <nodes >
     <node name="Light" >
@@ -71,7 +71,7 @@
       <scale x="2.000000" y="2.000000" z="2.000000" />
       <entity meshFile="Cube.mesh" name="Cube" >
         <userData >
-          <property data="box" name="Bulletcollider" type="str" />
+          <property data="box" name="bulletCollider" type="str" />
         </userData>
       </entity>
     </node>
@@ -81,7 +81,7 @@
       <scale x="2.000000" y="2.000000" z="2.000000" />
       <entity meshFile="Cube.mesh" name="Cube.001" >
         <userData >
-          <property data="box" name="Bulletcollider" type="str" />
+          <property data="box" name="bulletCollider" type="str" />
         </userData>
       </entity>
     </node>
@@ -91,7 +91,7 @@
       <scale x="2.000000" y="2.000000" z="2.000000" />
       <entity meshFile="Cube.mesh" name="Cube.002" >
         <userData >
-          <property data="box" name="Bulletcollider" type="str" />
+          <property data="box" name="bulletCollider" type="str" />
         </userData>
       </entity>
     </node>
@@ -101,7 +101,7 @@
       <scale x="2.000000" y="2.000000" z="2.000000" />
       <entity meshFile="Cube.mesh" name="Cube.003" >
         <userData >
-          <property data="box" name="Bulletcollider" type="str" />
+          <property data="box" name="bulletCollider" type="str" />
         </userData>
       </entity>
     </node>
@@ -111,7 +111,7 @@
       <scale x="2.000000" y="2.000000" z="2.000000" />
       <entity meshFile="Cube.mesh" name="Cube.004" >
         <userData >
-          <property data="box" name="Bulletcollider" type="str" />
+          <property data="box" name="bulletCollider" type="str" />
         </userData>
       </entity>
     </node>
@@ -121,7 +121,7 @@
       <scale x="2.000000" y="2.000000" z="2.000000" />
       <entity meshFile="Cube.mesh" name="Cube.005" >
         <userData >
-          <property data="box" name="Bulletcollider" type="str" />
+          <property data="box" name="bulletCollider" type="str" />
         </userData>
       </entity>
     </node>
