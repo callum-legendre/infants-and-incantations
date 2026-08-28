@@ -6,9 +6,6 @@ The player object that the player controls.
 It exists outside of all of the LevelScenes, so it survives loading and unloading of them. 
 */
 
-#include <SDL2/SDL_keyboard.h>
-#include <SDL2/SDL_mouse.h>
-
 #include "GameObject.h"
 #include "InputState.h"
 
@@ -31,18 +28,18 @@ class Player : public GameObject // inherits from GameObject class
     Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics); // constructor
 
     // overriden methods
-    void update(float deltaTime, InputState input) override; // update function
+    void update(float deltaTime) override; // update function
+    void SetInput(InputState newInput); // a set inpit method as the input cannot be passed through the update function (due to how overrides work)
 
     private:
 
     // methods
-    InputState getInput();
-    void movePlayer(float deltaTime, InputState input);
+    void movePlayer(float deltaTime);
 
     // properties
     static constexpr float moveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
-
-    btRigidBody* rb = nullptr;
+    InputState input; // stores the inputs of the player so that they are not passed through the update function
+    btRigidBody* rb = nullptr; // the rigidbody of the player (owned by the DynamicsWorld)
 };
 
 #endif

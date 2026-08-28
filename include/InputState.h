@@ -7,8 +7,12 @@ struct InputState
     bool left = false;
     bool back = false;
     bool right = false;
-    float mLocationX = 0.0;
-    float mLocationY = 0.0;
+    int mLocationX = 0;
+    int mLocationY = 0;
+    bool lClickPressed = false;
+    bool lClickReleased = false;
+    bool rClickPressed = false;
+    bool rClickReleased = false;
 };
 
 

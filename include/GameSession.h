@@ -10,6 +10,8 @@ The class that handles the actual game session. This is seperated from engine to
 #include "LevelScene.h"
 #include "InputState.h"
 
+#include <SDL2/SDL.h>
+
 namespace Ogre
 {
     class SceneManager;
@@ -27,6 +29,7 @@ class GameSession
     GameSession(Ogre::SceneManager& scnMgr); // constructor
     void update(float deltaTime); // update function
     Ogre::Camera* GetCamera(); // method that gets the camera, used in engine to assign the camera to the viewport
+    void HandleEvent(const SDL_Event& e); // method that handles all the other SDL events and assigns all input relevant ones
     ~GameSession(); // destructor
 
     private:

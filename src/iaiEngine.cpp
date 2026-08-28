@@ -91,10 +91,7 @@ void Engine::Run()
         // clamp deltatime to ensure no funny buisness when unusually large values occur
         const float clampedTime = std::min(deltaTime, 0.1f);
 
-        // update the game
-        session->update(clampedTime);
-
-        // SDL event variable, whenever something happens to the window it will be reflected in this variable
+        // SDL event variable, any SDL event (window changes or player input) will be stored in this
         SDL_Event e;
         // if something happens to the window, enter this loop
         while (SDL_PollEvent(&e))
@@ -114,9 +111,14 @@ void Engine::Run()
                     mRenderWindow->resize(w, h);
                     mRenderWindow->windowMovedOrResized();
                 }
+                default:
+                session->HandleEvent(e); // pass all other events to the game session to handle the events there
                 break;
             }
         }
+
+        // update the game
+        session->update(clampedTime);
 
         // check to see if the window was closed here for redundancy
         if (mRenderWindow->isClosed()){

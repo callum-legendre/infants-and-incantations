@@ -20,12 +20,12 @@ Player::Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhy
     rb->setAngularFactor(btVector3(0, 0, 0)); // prevent the capsule from topping which makes the baby roll
 }
 
-void Player::update(float deltaTime, InputState input)
+void Player::update(float deltaTime)
 {
-    movePlayer(deltaTime, input);
+    movePlayer(deltaTime);
 }
 
-void Player::movePlayer(float deltaTime, InputState input)
+void Player::movePlayer(float deltaTime)
 {
     Ogre::Vector3 direction = Ogre::Vector3::ZERO; // create movement vector
 
@@ -59,4 +59,9 @@ void Player::movePlayer(float deltaTime, InputState input)
         // mark the player as active
         rb->activate(true);
     }
+}
+
+void Player::SetInput(InputState newInput)
+{
+    input = newInput;
 }
