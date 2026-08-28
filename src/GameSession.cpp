@@ -28,8 +28,13 @@ void GameSession::LoadLevel()
 
 void GameSession::update(float deltaTime)
 {
-    // update the player and the other objects in the level
-    player->update(deltaTime);
+    // get the player's inputs
+    GetInput();
+
+    // update the player
+    player->update(deltaTime, input);
+
+    // update other objects in the level
     currentScene->update(deltaTime);
 
     // step one frame in the bullet physics simulation
@@ -37,6 +42,23 @@ void GameSession::update(float deltaTime)
 
     // update the camera
     playerCamera->update(deltaTime);
+}
+
+void GameSession::GetInput()
+{
+    // get the input state
+    const Uint8* keys = SDL_GetKeyboardState(nullptr);
+
+    // assign the input state to the input struct property
+    input.forward = static_cast<bool>(keys[SDL_SCANCODE_W]);
+    input.left = static_cast<bool>(keys[SDL_SCANCODE_A]);
+    input.back = static_cast<bool>(keys[SDL_SCANCODE_S]);
+    input.right = static_cast<bool>(keys[SDL_SCANCODE_D]);
+    input.mLocationX = 0.0;
+    input.mLocationY = 0.0;
+
+    // assign mouse popsition
+    const Uint32* mouse = SDL_GetMouseState(*input.mLocationX, *input.mLocationY);
 }
 
 Ogre::Camera* GameSession::GetCamera()

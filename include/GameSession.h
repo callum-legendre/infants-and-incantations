@@ -8,6 +8,7 @@ The class that handles the actual game session. This is seperated from engine to
 #include "Player.h"
 #include "PlayerCamera.h"
 #include "LevelScene.h"
+#include "InputState.h"
 
 namespace Ogre
 {
@@ -35,9 +36,11 @@ class GameSession
     std::unique_ptr<PlayerCamera> playerCamera = nullptr;
     std::unique_ptr<LevelScene> currentScene = nullptr;
     Ogre::SceneManager& scnMgr;
+    InputState input;
 
     // methods
-    void LoadLevel();
+    void LoadLevel(); // loads the level
+    void GetInput(); // method that gets the p[layer's keybaord input and mouse location each frame
 };
 
 

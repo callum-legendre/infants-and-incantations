@@ -7,6 +7,7 @@ It exists outside of all of the LevelScenes, so it survives loading and unloadin
 */
 
 #include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_mouse.h>
 
 #include "GameObject.h"
 #include "InputState.h"
@@ -30,13 +31,13 @@ class Player : public GameObject // inherits from GameObject class
     Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics); // constructor
 
     // overriden methods
-    void update(float deltaTime) override; // update function
+    void update(float deltaTime, InputState input) override; // update function
 
     private:
 
     // methods
     InputState getInput();
-    void movePlayer(float deltaTime);
+    void movePlayer(float deltaTime, InputState input);
 
     // properties
     static constexpr float moveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)

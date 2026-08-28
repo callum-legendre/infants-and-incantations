@@ -7,6 +7,8 @@ struct InputState
     bool left = false;
     bool back = false;
     bool right = false;
+    float mLocationX = 0.0;
+    float mLocationY = 0.0;
 };
 
 

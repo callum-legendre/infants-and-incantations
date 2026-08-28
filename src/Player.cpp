@@ -20,29 +20,13 @@ Player::Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhy
     rb->setAngularFactor(btVector3(0, 0, 0)); // prevent the capsule from topping which makes the baby roll
 }
 
-void Player::update(float deltaTime)
+void Player::update(float deltaTime, InputState input)
 {
-    movePlayer(deltaTime);
+    movePlayer(deltaTime, input);
 }
 
-InputState Player::getInput()
+void Player::movePlayer(float deltaTime, InputState input)
 {
-    // get the input state
-    const Uint8* keys = SDL_GetKeyboardState(nullptr);
-    InputState inputState {
-        .forward = static_cast<bool>(keys[SDL_SCANCODE_W]),
-        .left = static_cast<bool>(keys[SDL_SCANCODE_A]),
-        .back = static_cast<bool>(keys[SDL_SCANCODE_S]),
-        .right = static_cast<bool>(keys[SDL_SCANCODE_D])
-    };
-
-    return inputState;
-}
-
-void Player::movePlayer(float deltaTime)
-{
-    InputState input = getInput(); // get input keys
-
     Ogre::Vector3 direction = Ogre::Vector3::ZERO; // create movement vector
 
     // apply movement from input
