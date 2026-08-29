@@ -25,16 +25,40 @@ void Player::update(float deltaTime)
     // enter a state machine dependant on what state the player is currently in
     switch (currentState)
     {
-    case NONE: // if the state is none, then the player is free to move about
-        movePlayer(deltaTime);
+    case NONE: // if the state is none, then the player is free to move about or enter any other states
+        if (input.lClickPressed){ // if the player pressed left click then start charging the left spell
+            SetCurrentState(CHARGING_LEFT_SPELL);
+        }
+        else if (input.rClickPressed){ // if player pressed right click then start charging right spell
+            SetCurrentState(CHARGING_RIGHT_SPELL);
+        }
+        else { // otherwise player can move freely
+            movePlayer(deltaTime);
+        }
         break;
     
     case CHARGING_LEFT_SPELL: // if the player is charging the left spell
-        ChargeLeftSpell(deltaTime);
+        // check if the player is still holding left click
+        if (input.lClickReleased){  // if no, then stop charging the spell
+            SetCurrentState(NONE);
+            leftSpellChargeTimer = 0.0f;
+        }
+        else { // otherwise continue
+            ChargeLeftSpell(deltaTime);
+        }
+        break;
     
     case CHARGING_RIGHT_SPELL: // if the player is charging the right spell
-        ChargeRightSpell(deltaTime);
-
+        // check if the player is still holding right click
+        if (input.rClickReleased){  // if no, then stop charging the spell
+            SetCurrentState(NONE);
+            rightSpellChargeTimer = 0.0f;
+        }
+        else { // otherwise continue
+            ChargeRightSpell(deltaTime);
+        }
+        break;
+        
     default:
         break;
     }
