@@ -26,7 +26,7 @@ public:
     {
     }
 
-    ~Spell();
+    virtual ~Spell() = default;
 
     float GetSpellCastTime()  // gets the cast time of the spell
     {
