@@ -63,8 +63,34 @@ class PushSpell : public Spell
 
         // loop through each result and apply the push force to each result 
         for (Ogre::MovableObject* object : result.movables){
-            // check if the object is in the cone
-                // apply the push to it if so
+
+            // get the scene node of each movable object
+            Ogre::SceneNode* objectNode = object->getParentSceneNode();
+
+            // check to make sure the object has a parent
+            if (!objectNode) {continue;} // if no parent, then skip them
+
+            // skip the player themself (they will always be returned by the query as they are in the radius)
+            if (objectNode == player.GetSceneNode()) {continue;}
+
+            // calculate the vector from the player to the object
+            Ogre::Vector3 vectorToObject = objectNode->_getDerivedPosition() - playerPos;
+            vectorToObject.y = 0.0f; // dont take into account height above the player TODO, CHANGE THIS LATER AFTER TESTING
+
+            // find the distance from the player to the object
+            float objectDistance = vectorToObject.length();
+
+            // check if the object is beyond the spell's range TODO: maybe take this away? How forgiving do I want this spell to be?
+            if (objectDistance > spellRange) {continue;}
+
+            // create a normalised vector from the object
+            Ogre::Vector3 objectDirection = vectorToObject / objectDistance;
+
+            // run the dotproduct calculation to find the angle from the player 
+            float alignment = aimDirection.dotProduct(objectDirection);
+
+            // if the alignment is less than the minimum dot product required, then go to the next object and don't apply force to it
+            if (alignment < minimumDot) {continue;}
         }
 
         // now that it has executed and results have been processed, the query is no longer needed so destroy it
