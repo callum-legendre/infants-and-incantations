@@ -39,24 +39,46 @@ void Player::update(float deltaTime)
     
     case CHARGING_LEFT_SPELL: // if the player is charging the left spell
         // check if the player is still holding left click
-        if (input.lClickReleased){  // if no, then stop charging the spell
+        if (input.lClickReleased && leftSpellChargeTimer >= leftSpellChargeTime){  // if no, then check if the spell is charged
+            // if spell is charged then cast it and reset timer
+            SetCurrentState(CASTING_LEFT_SPELL);
+            leftSpellChargeTimer = 0.0f;
+        }
+        else if (input.lClickReleased && leftSpellChargeTimer < leftSpellChargeTime){ // if spell is not charged
+            // free player movement and reset timer
             SetCurrentState(NONE);
             leftSpellChargeTimer = 0.0f;
         }
-        else { // otherwise continue
-            ChargeLeftSpell(deltaTime);
+        else { // otherwise continue charging the spell
+            leftSpellChargeTimer += deltaTime;
         }
         break;
     
     case CHARGING_RIGHT_SPELL: // if the player is charging the right spell
         // check if the player is still holding right click
-        if (input.rClickReleased){  // if no, then stop charging the spell
+        if (input.rClickReleased && rightSpellChargeTimer >= rightSpellChargeTime){  // if no, then check if the spell is charged
+            // if spell is charged then cast it and reset timer
+            SetCurrentState(CASTING_RIGHT_SPELL);
+            rightSpellChargeTimer = 0.0f;
+        }
+        else if (input.rClickReleased && rightSpellChargeTimer < rightSpellChargeTime){ // if spell is not charged
+            // free player movement and reset timer
             SetCurrentState(NONE);
             rightSpellChargeTimer = 0.0f;
         }
-        else { // otherwise continue
-            ChargeRightSpell(deltaTime);
+        else { // otherwise continue charging the spell
+            rightSpellChargeTimer += deltaTime;
         }
+        break;
+
+    case CASTING_LEFT_SPELL: // once the timer has completed, cast the spell and free the player movement
+        CastLeftSpell();
+        SetCurrentState(NONE); 
+        break;
+    
+    case CASTING_RIGHT_SPELL:
+        CastRightSpell();
+        SetCurrentState(NONE);
         break;
         
     default:
@@ -115,26 +137,12 @@ PlayerState Player::GetCurrentState()
     return currentState;
 }
 
-void Player::ChargeLeftSpell(float deltaTime)
+void Player::CastLeftSpell()
 {
-    // if the left spell timer is less than the charge time then increment it
-    if (leftSpellChargeTimer < leftSpellChargeTime){
-        leftSpellChargeTimer += deltaTime;
-    }
-    else { // reset the timer and cast the spell
-        leftSpellChargeTimer = 0.0f;
-        SetCurrentState(CASTING_LEFT_SPELL);
-    }
+
 }
 
-void Player::ChargeRightSpell(float deltaTime)
+void Player::CastRightSpell()
 {
-    // if the right spell timer is less than the charge time then increment it
-    if (rightSpellChargeTimer < rightSpellChargeTime){
-        rightSpellChargeTimer += deltaTime;
-    }
-    else { // reset the timer and cast the spell
-        rightSpellChargeTimer = 0.0f;
-        SetCurrentState(CASTING_RIGHT_SPELL);
-    }
+
 }

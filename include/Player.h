@@ -51,8 +51,8 @@ class Player : public GameObject // inherits from GameObject class
     private:
     // -- methods --
         void movePlayer(float deltaTime); // method that moves the player according to the inputs
-        void ChargeLeftSpell(float deltaTime); // method that handles the charging of the left spell
-        void ChargeRightSpell(float deltaTime); // method that handles the charging of the right spell
+        void CastLeftSpell(); // method that handles the casting of the left spell
+        void CastRightSpell(); // method that handles the casting of the right spell
 
 
     // -- properties -- 
