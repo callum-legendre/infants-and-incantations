@@ -55,6 +55,12 @@ class PushSpell : public Spell
         // execute the query and get the results
         Ogre::SceneQueryResult& result = query->execute();
 
+        // calculate the cone boundaries
+        float halfConeAngle = coneAngleWidth * 0.5f; // calculate half of the width
+
+        // calculate the dot product limit of the obejct's distances
+        float minimumDot = Ogre::Math::Cos(Ogre::Degree(halfConeAngle));
+
         // loop through each result and apply the push force to each result 
         for (Ogre::MovableObject* object : result.movables){
             // check if the object is in the cone
