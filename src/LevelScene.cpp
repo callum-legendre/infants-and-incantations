@@ -78,8 +78,13 @@ void LevelScene::createColliders(Ogre::SceneNode* node)
             continue;
         }
 
+        // TODO: check if the object is intended to be dynamic (will be marked as such with an object binding) and apply the correct mass to it if so
+
         // create the rigidbodys attached to the entity
-        worldPhysics.addRigidBody(0.0f, entity, type);
+        btRigidBody* newRB = worldPhysics.addRigidBody(5.0f, entity, type);
+
+        // store a reference to the rigidbody in the object
+        entity->getUserObjectBindings().setUserAny("bulletRigidBody", Ogre::Any(newRB));
 
         // print a success message
         Ogre::LogManager::getSingleton().logMessage(

@@ -5,6 +5,7 @@
 #include <OgreViewport.h>
 #include <OgreRay.h>
 #include <OgreSphere.h>
+#include <OgreBullet.h>
 
 #include "Spell.h"
 
@@ -91,6 +92,25 @@ class PushSpell : public Spell
 
             // if the alignment is less than the minimum dot product required, then go to the next object and don't apply force to it
             if (alignment < minimumDot) {continue;}
+
+            // get the pointer to the rigidbody from the object
+            const Ogre::Any& bodyReference = object->getUserObjectBindings().getUserAny("bulletRigidBody");
+
+            // null check to ensure that the object actually has a rigidbody
+            if (!bodyReference.has_value()) {continue;}
+
+            // cast the pointer to a rigidbody pointer so it can be used like one
+            btRigidBody* rb = Ogre::any_cast<btRigidBody*>(bodyReference);
+
+            // create the impule vector
+            Ogre::Vector3 impulse = objectDirection * pushStrength;
+
+            // convert the ogre vector into a bullet vector, so it can be applied to the rigidbody
+            btVector3 bulletInpulse = Ogre::Bullet::convert(impulse);
+
+            // apply the impulse to the object
+            rb->activate(true); // activete the rigidbody
+            rb->applyCentralImpulse(bulletInpulse); // apply the impulse to it
         }
 
         // now that it has executed and results have been processed, the query is no longer needed so destroy it
