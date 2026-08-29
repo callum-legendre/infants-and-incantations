@@ -27,7 +27,8 @@ void Player::update(float deltaTime)
     {
     case NONE: // if the state is none, then the player is free to move about
         movePlayer(deltaTime);
-
+        break;
+        
     default:
         break;
     }
