@@ -48,8 +48,8 @@ class Player : public GameObject // inherits from GameObject class
         // set methods
         void SetInput(InputState newInput); // a set input method as the input cannot be passed through the update function (due to how overrides work)
         void SetCurrentState(PlayerState newState); 
-        void SetPrimarySpell(Spell newSpell); 
-        void SetSecondarySpell(Spell newSpell);
+        void SetPrimarySpell(std::unique_ptr<Spell>(newSpell)); 
+        void SetSecondarySpell(std::unique_ptr<Spell>(newSpell));
 
     private:
     // -- methods --
@@ -67,8 +67,8 @@ class Player : public GameObject // inherits from GameObject class
         PlayerState currentState = NONE; // the current state of the player, set to none by default
 
         // spellcasting
-        Spell primarySpell; // current primary spell
-        Spell secondarySpell; // current secondary spell
+        std::unique_ptr<Spell> primarySpell; // current primary spell
+        std::unique_ptr<Spell> secondarySpell; // current secondary spell
         float primarySpellTimer = 0.0f; // timer for casting spell one
         float secondarySpellTimer = 0.0f; // timer for casting spell two
 };

@@ -9,6 +9,9 @@ Every spell will have the following charatceristsics:
     (more to be added as it beomes relevent)
 */
 
+#include "Player.h"
+#include "InputState.h"
+
 namespace Ogre
 {
     class SceneManager;
@@ -19,7 +22,10 @@ class Spell
 {
 public:
     // methods
-    Spell(Ogre::SceneManager& scnMgr, float spellCastTime) : scnMgr(scnMgr), spellCastTime(spellCastTime) {}
+    Spell(Ogre::SceneManager& scnMgr, float spellCastTime) : scnMgr(scnMgr), spellCastTime(spellCastTime)
+    {
+    }
+
     ~Spell();
 
     float GetSpellCastTime()  // gets the cast time of the spell
@@ -27,7 +33,7 @@ public:
         return spellCastTime;
     };
 
-    virtual void CastSpell(Ogre::SceneNode& playerNode) {}; // casts the spell
+    virtual void CastSpell(Player& player, InputState input){}; // casts the spell
 
 protected:
     // properties
@@ -35,6 +41,7 @@ protected:
 
     // unowned proterties
     Ogre::SceneManager& scnMgr;
+    
 
 private:
 

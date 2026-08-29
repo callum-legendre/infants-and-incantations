@@ -39,12 +39,12 @@ void Player::update(float deltaTime)
     
     case CHARGING_PRIMARY_SPELL: // if the player is charging the prinmary spell
         // check if the player is still holding the bound button
-        if (input.primarySpellReleased && primarySpellTimer >= primarySpell.GetSpellCastTime()){  // if no, then check if the spell is charged
+        if (input.primarySpellReleased && primarySpellTimer >= primarySpell->GetSpellCastTime()){  // if no, then check if the spell is charged
             // if spell is charged then cast it and reset timer
             SetCurrentState(CASTING_PRIMARY_SPELL);
             primarySpellTimer = 0.0f;
         }
-        else if (input.primarySpellReleased && primarySpellTimer < primarySpell.GetSpellCastTime()){ // if spell is not charged
+        else if (input.primarySpellReleased && primarySpellTimer < primarySpell->GetSpellCastTime()){ // if spell is not charged
             // free player movement and reset timer
             SetCurrentState(NONE);
             primarySpellTimer = 0.0f;
@@ -56,12 +56,12 @@ void Player::update(float deltaTime)
     
     case CHARGING_SECONDARY_SPELL: // if the player is charging the right spell
         // check if the player is still holding right click
-        if (input.secondarySpellPressed && secondarySpellTimer >= secondarySpell.GetSpellCastTime()){  // if no, then check if the spell is charged
+        if (input.secondarySpellPressed && secondarySpellTimer >= secondarySpell->GetSpellCastTime()){  // if no, then check if the spell is charged
             // if spell is charged then cast it and reset timer
             SetCurrentState(CASTING_SECONDARY_SPELL);
             secondarySpellTimer = 0.0f;
         }
-        else if (input.secondarySpellPressed && secondarySpellTimer < secondarySpell.GetSpellCastTime()){ // if spell is not charged
+        else if (input.secondarySpellPressed && secondarySpellTimer < secondarySpell->GetSpellCastTime()){ // if spell is not charged
             // free player movement and reset timer
             SetCurrentState(NONE);
             secondarySpellTimer = 0.0f;
@@ -72,12 +72,12 @@ void Player::update(float deltaTime)
         break;
 
     case CASTING_PRIMARY_SPELL: // once the timer has completed, cast the spell and free the player movement
-        primarySpell.CastSpell();
+        primarySpell->CastSpell(*this, input);
         SetCurrentState(NONE); 
         break;
     
     case CASTING_SECONDARY_SPELL:
-        secondarySpell.CastSpell();
+        secondarySpell->CastSpell(*this, input);
         SetCurrentState(NONE);
         break;
         
@@ -137,12 +137,12 @@ PlayerState Player::GetCurrentState()
     return currentState;
 }
 
-void Player::SetPrimarySpell(Spell newSpell)
+void Player::SetPrimarySpell(std::unique_ptr<Spell>(newSpell))
 {
-    primarySpell = newSpell;
+    primarySpell = std::move(newSpell);
 }
 
-void Player::SetSecondarySpell(Spell newSpell)
+void Player::SetSecondarySpell(std::unique_ptr<Spell>(newSpell))
 {
-    secondarySpell = newSpell;
+    secondarySpell = std::move(newSpell);
 }
