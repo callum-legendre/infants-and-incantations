@@ -77,6 +77,7 @@ add_executable(iai MACOSX_BUNDLE
     src/Player.cpp
     src/PlayerCamera.cpp
     src/GameSession.cpp
+    src/PushSpell.cpp
 )
 
 set_target_properties(iai PROPERTIES

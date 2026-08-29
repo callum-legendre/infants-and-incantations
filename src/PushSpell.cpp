@@ -8,6 +8,8 @@
 #include <OgreBullet.h>
 
 #include "Spell.h"
+#include "Player.h"
+#include "InputState.h"
 
 class PushSpell : public Spell
 {
@@ -15,7 +17,7 @@ class PushSpell : public Spell
     PushSpell(Ogre::SceneManager& scnMgr) : Spell(scnMgr, 1.0f) {} // constructor
 
     // override for the cast method
-    void CastSpell(Player& player, InputState input) override
+    void CastSpell(Player& player, const InputState& input) override
     { // TODO: when writing the next spell, go through this code and identify repeated sections and move them into a function in the parent class
         // get the player camera
         Ogre::Camera* camera = scnMgr.getCamera("PlayerCamera");
