@@ -12,6 +12,7 @@ Every spell will have the following charatceristsics:
 namespace Ogre
 {
     class SceneManager;
+    class SceneNode;
 };
 
 class Spell
@@ -26,7 +27,7 @@ public:
         return spellCastTime;
     };
 
-    virtual void CastSpell() {}; // casts the spell
+    virtual void CastSpell(Ogre::SceneNode& playerNode) {}; // casts the spell
 
 protected:
     // properties
