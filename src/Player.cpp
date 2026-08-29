@@ -137,12 +137,12 @@ PlayerState Player::GetCurrentState()
     return currentState;
 }
 
-void Player::SetSpellOne(Spell newSpell)
+void Player::SetPrimarySpell(Spell newSpell)
 {
-    spellOne = newSpell;
+    primarySpell = newSpell;
 }
 
-void Player::SetSpellTwo(Spell newSpell)
+void Player::SetSecondarySpell(Spell newSpell)
 {
-    spellTwo = newSpell;
+    secondarySpell = newSpell;
 }
