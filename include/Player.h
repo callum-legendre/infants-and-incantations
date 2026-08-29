@@ -26,10 +26,10 @@ namespace Ogre
 // define the enum for easy storage and determining of the player's state
 enum PlayerState 
 {
-    CHARGING_LEFT_SPELL,
-    CASTING_LEFT_SPELL,
-    CHARGING_RIGHT_SPELL,
-    CASTING_RIGHT_SPELL,
+    CHARGING_PRIMARY_SPELL,
+    CASTING_PRIMARY_SPELL,
+    CHARGING_SECONDARY_SPELL,
+    CASTING_SECONDARY_SPELL,
     NONE,
 };
 
@@ -48,8 +48,8 @@ class Player : public GameObject // inherits from GameObject class
         // set methods
         void SetInput(InputState newInput); // a set input method as the input cannot be passed through the update function (due to how overrides work)
         void SetCurrentState(PlayerState newState); 
-        void SetLeftSpell(Spell newSpell); 
-        void SetRightSpell(Spell newSpell);
+        void SetPrimarySpell(Spell newSpell); 
+        void SetSecondarySpell(Spell newSpell);
 
     private:
     // -- methods --
@@ -67,10 +67,10 @@ class Player : public GameObject // inherits from GameObject class
         PlayerState currentState = NONE; // the current state of the player, set to none by default
 
         // spellcasting
-        Spell leftSpell; // current spell bound to left click
-        Spell rightSpell; // current spell bound to right click
-        float leftSpellTimer = 0.0f; // timer for casting the left spell
-        float rightSpellTimer = 0.0f; // timer for casting the right spell
+        Spell primarySpell; // current primary spell
+        Spell secondarySpell; // current secondary spell
+        float primarySpellTimer = 0.0f; // timer for casting spell one
+        float secondarySpellTimer = 0.0f; // timer for casting spell two
 };
 
 #endif

@@ -26,58 +26,58 @@ void Player::update(float deltaTime)
     switch (currentState)
     {
     case NONE: // if the state is none, then the player is free to move about or enter any other states
-        if (input.lClickPressed){ // if the player pressed left click then start charging the left spell
-            SetCurrentState(CHARGING_LEFT_SPELL);
+        if (input.primarySpellPressed){ // if the player pressed the bound buttonk then start charging the primary spell
+            SetCurrentState(CHARGING_PRIMARY_SPELL);
         }
-        else if (input.rClickPressed){ // if player pressed right click then start charging right spell
-            SetCurrentState(CHARGING_RIGHT_SPELL);
+        else if (input.secondarySpellPressed){ // if player pressed the bound button then start charging secondary spell
+            SetCurrentState(CHARGING_SECONDARY_SPELL);
         }
         else { // otherwise player can move freely
             movePlayer(deltaTime);
         }
         break;
     
-    case CHARGING_LEFT_SPELL: // if the player is charging the left spell
-        // check if the player is still holding left click
-        if (input.lClickReleased && leftSpellTimer >= leftSpell.GetSpellCastTime()){  // if no, then check if the spell is charged
+    case CHARGING_PRIMARY_SPELL: // if the player is charging the prinmary spell
+        // check if the player is still holding the bound button
+        if (input.primarySpellReleased && primarySpellTimer >= primarySpell.GetSpellCastTime()){  // if no, then check if the spell is charged
             // if spell is charged then cast it and reset timer
-            SetCurrentState(CASTING_LEFT_SPELL);
-            leftSpellTimer = 0.0f;
+            SetCurrentState(CASTING_PRIMARY_SPELL);
+            primarySpellTimer = 0.0f;
         }
-        else if (input.lClickReleased && leftSpellTimer < leftSpell.GetSpellCastTime()){ // if spell is not charged
+        else if (input.primarySpellReleased && primarySpellTimer < primarySpell.GetSpellCastTime()){ // if spell is not charged
             // free player movement and reset timer
             SetCurrentState(NONE);
-            leftSpellTimer = 0.0f;
+            primarySpellTimer = 0.0f;
         }
         else { // otherwise continue charging the spell
-            leftSpellTimer += deltaTime;
+            primarySpellTimer += deltaTime;
         }
         break;
     
-    case CHARGING_RIGHT_SPELL: // if the player is charging the right spell
+    case CHARGING_SECONDARY_SPELL: // if the player is charging the right spell
         // check if the player is still holding right click
-        if (input.rClickReleased && rightSpellTimer >= rightSpell.GetSpellCastTime()){  // if no, then check if the spell is charged
+        if (input.secondarySpellPressed && secondarySpellTimer >= secondarySpell.GetSpellCastTime()){  // if no, then check if the spell is charged
             // if spell is charged then cast it and reset timer
-            SetCurrentState(CASTING_RIGHT_SPELL);
-            rightSpellTimer = 0.0f;
+            SetCurrentState(CASTING_SECONDARY_SPELL);
+            secondarySpellTimer = 0.0f;
         }
-        else if (input.rClickReleased && rightSpellTimer < rightSpell.GetSpellCastTime()){ // if spell is not charged
+        else if (input.secondarySpellPressed && secondarySpellTimer < secondarySpell.GetSpellCastTime()){ // if spell is not charged
             // free player movement and reset timer
             SetCurrentState(NONE);
-            rightSpellTimer = 0.0f;
+            secondarySpellTimer = 0.0f;
         }
         else { // otherwise continue charging the spell
-            rightSpellTimer += deltaTime;
+            secondarySpellTimer += deltaTime;
         }
         break;
 
-    case CASTING_LEFT_SPELL: // once the timer has completed, cast the spell and free the player movement
-        leftSpell.CastSpell();
+    case CASTING_PRIMARY_SPELL: // once the timer has completed, cast the spell and free the player movement
+        primarySpell.CastSpell();
         SetCurrentState(NONE); 
         break;
     
-    case CASTING_RIGHT_SPELL:
-        rightSpell.CastSpell();
+    case CASTING_SECONDARY_SPELL:
+        secondarySpell.CastSpell();
         SetCurrentState(NONE);
         break;
         
@@ -137,12 +137,12 @@ PlayerState Player::GetCurrentState()
     return currentState;
 }
 
-void Player::SetLeftSpell(Spell newSpell)
+void Player::SetSpellOne(Spell newSpell)
 {
-    leftSpell = newSpell;
+    spellOne = newSpell;
 }
 
-void Player::SetRightSpell(Spell newSpell)
+void Player::SetSpellTwo(Spell newSpell)
 {
-    rightSpell = newSpell;
+    spellTwo = newSpell;
 }

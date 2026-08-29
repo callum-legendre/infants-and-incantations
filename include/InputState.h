@@ -9,10 +9,10 @@ struct InputState
     bool right = false;
     int mLocationX = 0;
     int mLocationY = 0;
-    bool lClickPressed = false;
-    bool lClickReleased = false;
-    bool rClickPressed = false;
-    bool rClickReleased = false;
+    bool primarySpellPressed = false;
+    bool secondarySpellPressed = false;
+    bool primarySpellReleased = false;
+    bool secondarySpellReleased = false;
 };
 
 

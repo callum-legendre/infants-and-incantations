@@ -45,10 +45,10 @@ void GameSession::update(float deltaTime)
     playerCamera->update(deltaTime);
 
     // clean the input struct
-    input.lClickPressed = false;
-    input.lClickReleased = false;
-    input.rClickPressed = false;
-    input.lClickReleased = false;
+    input.primarySpellPressed = false;
+    input.primarySpellReleased = false;
+    input.secondarySpellPressed = false;
+    input.secondarySpellReleased = false;
 }
 
 void GameSession::HandleEvent(const SDL_Event& e)
@@ -56,19 +56,19 @@ void GameSession::HandleEvent(const SDL_Event& e)
     // if the event was mouse button being pressed then assign the proper value to the input struct
     if (e.type == SDL_MOUSEBUTTONDOWN){
         if (e.button.button == SDL_BUTTON_LEFT){
-            input.lClickPressed = true;
+            input.primarySpellPressed = true;
         }
         else if (e.button.button == SDL_BUTTON_RIGHT) {
-            input.rClickPressed = true;
+            input.secondarySpellPressed = true;
         }
     }
     // do the same for the button being released
     else if (e.type == SDL_MOUSEBUTTONUP){
         if (e.button.button == SDL_BUTTON_LEFT){
-            input.lClickReleased = true;
+            input.primarySpellReleased = true;
         }
         else if (e.button.button == SDL_BUTTON_RIGHT) {
-            input.rClickReleased = true;
+            input.secondarySpellReleased = true;
         }
     }
 }
