@@ -22,7 +22,15 @@ Player::Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhy
 
 void Player::update(float deltaTime)
 {
-    movePlayer(deltaTime);
+    // enter a state machine dependant on what state the player is currently in
+    switch (currentState)
+    {
+    case NONE: // if the state is none, then the player is free to move about
+        movePlayer(deltaTime);
+
+    default:
+        break;
+    }
 }
 
 void Player::movePlayer(float deltaTime)
