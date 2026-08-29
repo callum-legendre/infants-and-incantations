@@ -28,7 +28,13 @@ void Player::update(float deltaTime)
     case NONE: // if the state is none, then the player is free to move about
         movePlayer(deltaTime);
         break;
-        
+    
+    case CHARGING_LEFT_SPELL: // if the player is charging the left spell
+        ChargeLeftSpell(deltaTime);
+    
+    case CHARGING_RIGHT_SPELL: // if the player is charging the right spell
+        ChargeRightSpell(deltaTime);
+
     default:
         break;
     }
@@ -73,4 +79,28 @@ void Player::movePlayer(float deltaTime)
 void Player::SetInput(InputState newInput)
 {
     input = newInput;
+}
+
+void Player::ChargeLeftSpell(float deltaTime)
+{
+    // if the left spell timer is less than the charge time then increment it
+    if (leftSpellChargeTimer < leftSpellChargeTime){
+        leftSpellChargeTimer += deltaTime;
+    }
+    else { // reset the timer and cast the spell
+        leftSpellChargeTimer = 0.0f;
+        SetCurrentState(CASTING_LEFT_SPELL);
+    }
+}
+
+void Player::ChargeRightSpell(float deltaTime)
+{
+    // if the right spell timer is less than the charge time then increment it
+    if (rightSpellChargeTimer < rightSpellChargeTime){
+        rightSpellChargeTimer += deltaTime;
+    }
+    else { // reset the timer and cast the spell
+        rightSpellChargeTimer = 0.0f;
+        SetCurrentState(CASTING_RIGHT_SPELL);
+    }
 }

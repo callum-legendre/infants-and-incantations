@@ -35,24 +35,42 @@ enum PlayerState
 class Player : public GameObject // inherits from GameObject class
 {
     public:
-    Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics); // constructor
+    // -- methods --
+        Player(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics); // constructor
 
-    // overriden methods
-    void update(float deltaTime) override; // update function
-    void SetInput(InputState newInput); // a set inpit method as the input cannot be passed through the update function (due to how overrides work)
-    PlayerState GetCurrentState(); // returns the current state of the player
-    void SetCurrentState(PlayerState newState); // sets the player's state to a new state 
+        // overriden methods
+        void update(float deltaTime) override; // update function
+
+        // get methods
+        PlayerState GetCurrentState(); // returns the current state of the player
+
+        // set methods
+        void SetInput(InputState newInput); // a set input method as the input cannot be passed through the update function (due to how overrides work)
+        void SetCurrentState(PlayerState newState); // sets the player's state to a new state 
 
     private:
+    // -- methods --
+        void movePlayer(float deltaTime); // method that moves the player according to the inputs
+        void ChargeLeftSpell(float deltaTime); // method that handles the charging of the left spell
+        void ChargeRightSpell(float deltaTime); // method that handles the charging of the right spell
 
-    // methods
-    void movePlayer(float deltaTime);
 
-    // properties
-    static constexpr float moveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
-    InputState input; // stores the inputs of the player so that they are not passed through the update function
-    btRigidBody* rb = nullptr; // the rigidbody of the player (owned by the DynamicsWorld)
-    PlayerState currentState = NONE; // the current state of the player, set to none by default
+    // -- properties -- 
+        // constants
+        static constexpr float moveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
+        static constexpr float leftSpellChargeTime = 0.5f; // the time it takes to charge the left spell
+        static constexpr float rightSpellChargeTime = 1.0f; // the time it takes to charge the right spell
+    
+        // unowned properties 
+        btRigidBody* rb = nullptr; // the rigidbody of the player (owned by the DynamicsWorld)
+
+        // player input
+        InputState input; // stores the inputs of the player so that they are not passed through the update function
+        PlayerState currentState = NONE; // the current state of the player, set to none by default
+
+        // spellcasting
+        float leftSpellChargeTimer = 0.0f;
+        float rightSpellChargeTimer = 0.0f;
 };
 
 #endif
