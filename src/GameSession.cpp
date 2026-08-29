@@ -5,11 +5,16 @@
 #include <OgreCamera.h>
 #include <OgreBullet.h>
 
+#include "PushSpell.h"
+
 GameSession::GameSession(Ogre::SceneManager& scnMgr) : worldPhysics(std::make_unique<Ogre::Bullet::DynamicsWorld>(Ogre::Vector3(0.0f, -9.81f, 0.0f))), scnMgr(scnMgr)
 { // pass in the scene manager and create the dynamics world object for Bullet
     player = std::make_unique<Player>(scnMgr, *worldPhysics);
     playerCamera = std::make_unique<PlayerCamera>(scnMgr);
     LoadLevel();
+
+    // bind the push spell as they player's primary spell (just for testing purposes atm)
+    player->SetPrimarySpell(std::make_unique<PushSpell>(scnMgr));
 }
 
 void GameSession::LoadLevel()
