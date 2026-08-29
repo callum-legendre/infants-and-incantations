@@ -9,11 +9,16 @@ Every spell will have the following charatceristsics:
     (more to be added as it beomes relevent)
 */
 
+namespace Ogre
+{
+    class SceneManager;
+};
+
 class Spell
 {
 public:
     // methods
-    Spell(); 
+    Spell(Ogre::SceneManager& scnMgr, float spellCastTime) : scnMgr(scnMgr), spellCastTime(spellCastTime) {}
     ~Spell();
 
     float GetSpellCastTime()  // gets the cast time of the spell
@@ -22,10 +27,14 @@ public:
     };
 
     virtual void CastSpell() {}; // casts the spell
-    
+
 protected:
     // properties
     float spellCastTime;
+
+    // unowned proterties
+    Ogre::SceneManager& scnMgr;
+
 private:
 
 };
