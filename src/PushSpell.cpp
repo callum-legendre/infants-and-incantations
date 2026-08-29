@@ -29,7 +29,22 @@ class PushSpell : public Spell
         // get the player position
         Ogre::Vector3 playerPos = player.GetSceneNode()->_getDerivedPosition();
 
-        
+        // create a plane that passes through the player
+        Ogre::Plane aimPlane(Ogre::Vector3::UNIT_Y, playerPos);
+
+        // get the point where the ray intersects the plane that we jusr created
+        auto [didHitPlane, distanceAlongRay] = ray.intersects(aimPlane);
+
+        // make sure that the ray and the plane intersect at some point
+        if (!didHitPlane) {return;}
+
+        // get the point that the player is aiming towards
+        Ogre::Vector3 aimPoint = ray.getPoint(distanceAlongRay);
+
+        // calculate the direction from the player that the player is aiming at
+        Ogre::Vector3 aimDirection = aimPoint - playerPos;
+        aimDirection.y = 0.0f; // make the direction horizontal, just in case
+        aimDirection.normalise(); // normalise the aim direction so that the dot products can be used
 
         // create the sphere to query in
         Ogre::Sphere searchArea(playerPos, spellRange);
