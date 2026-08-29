@@ -39,45 +39,45 @@ void Player::update(float deltaTime)
     
     case CHARGING_LEFT_SPELL: // if the player is charging the left spell
         // check if the player is still holding left click
-        if (input.lClickReleased && leftSpellChargeTimer >= leftSpellChargeTime){  // if no, then check if the spell is charged
+        if (input.lClickReleased && leftSpellTimer >= leftSpell.GetSpellCastTime()){  // if no, then check if the spell is charged
             // if spell is charged then cast it and reset timer
             SetCurrentState(CASTING_LEFT_SPELL);
-            leftSpellChargeTimer = 0.0f;
+            leftSpellTimer = 0.0f;
         }
-        else if (input.lClickReleased && leftSpellChargeTimer < leftSpellChargeTime){ // if spell is not charged
+        else if (input.lClickReleased && leftSpellTimer < leftSpell.GetSpellCastTime()){ // if spell is not charged
             // free player movement and reset timer
             SetCurrentState(NONE);
-            leftSpellChargeTimer = 0.0f;
+            leftSpellTimer = 0.0f;
         }
         else { // otherwise continue charging the spell
-            leftSpellChargeTimer += deltaTime;
+            leftSpellTimer += deltaTime;
         }
         break;
     
     case CHARGING_RIGHT_SPELL: // if the player is charging the right spell
         // check if the player is still holding right click
-        if (input.rClickReleased && rightSpellChargeTimer >= rightSpellChargeTime){  // if no, then check if the spell is charged
+        if (input.rClickReleased && rightSpellTimer >= rightSpell.GetSpellCastTime()){  // if no, then check if the spell is charged
             // if spell is charged then cast it and reset timer
             SetCurrentState(CASTING_RIGHT_SPELL);
-            rightSpellChargeTimer = 0.0f;
+            rightSpellTimer = 0.0f;
         }
-        else if (input.rClickReleased && rightSpellChargeTimer < rightSpellChargeTime){ // if spell is not charged
+        else if (input.rClickReleased && rightSpellTimer < rightSpell.GetSpellCastTime()){ // if spell is not charged
             // free player movement and reset timer
             SetCurrentState(NONE);
-            rightSpellChargeTimer = 0.0f;
+            rightSpellTimer = 0.0f;
         }
         else { // otherwise continue charging the spell
-            rightSpellChargeTimer += deltaTime;
+            rightSpellTimer += deltaTime;
         }
         break;
 
     case CASTING_LEFT_SPELL: // once the timer has completed, cast the spell and free the player movement
-        CastLeftSpell();
+        leftSpell.CastSpell();
         SetCurrentState(NONE); 
         break;
     
     case CASTING_RIGHT_SPELL:
-        CastRightSpell();
+        rightSpell.CastSpell();
         SetCurrentState(NONE);
         break;
         
@@ -137,12 +137,12 @@ PlayerState Player::GetCurrentState()
     return currentState;
 }
 
-void Player::CastLeftSpell()
+void Player::SetLeftSpell(Spell newSpell)
 {
-
+    leftSpell = newSpell;
 }
 
-void Player::CastRightSpell()
+void Player::SetRightSpell(Spell newSpell)
 {
-
+    rightSpell = newSpell;
 }

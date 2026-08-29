@@ -8,6 +8,7 @@ It exists outside of all of the LevelScenes, so it survives loading and unloadin
 
 #include "GameObject.h"
 #include "InputState.h"
+#include "Spell.h"
 
 // forward declarations
 class btRigidBody;
@@ -46,20 +47,17 @@ class Player : public GameObject // inherits from GameObject class
 
         // set methods
         void SetInput(InputState newInput); // a set input method as the input cannot be passed through the update function (due to how overrides work)
-        void SetCurrentState(PlayerState newState); // sets the player's state to a new state 
+        void SetCurrentState(PlayerState newState); 
+        void SetLeftSpell(Spell newSpell); 
+        void SetRightSpell(Spell newSpell);
 
     private:
     // -- methods --
         void movePlayer(float deltaTime); // method that moves the player according to the inputs
-        void CastLeftSpell(); // method that handles the casting of the left spell
-        void CastRightSpell(); // method that handles the casting of the right spell
-
 
     // -- properties -- 
         // constants
         static constexpr float moveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
-        static constexpr float leftSpellChargeTime = 0.5f; // the time it takes to charge the left spell
-        static constexpr float rightSpellChargeTime = 1.0f; // the time it takes to charge the right spell
     
         // unowned properties 
         btRigidBody* rb = nullptr; // the rigidbody of the player (owned by the DynamicsWorld)
@@ -69,8 +67,10 @@ class Player : public GameObject // inherits from GameObject class
         PlayerState currentState = NONE; // the current state of the player, set to none by default
 
         // spellcasting
-        float leftSpellChargeTimer = 0.0f;
-        float rightSpellChargeTimer = 0.0f;
+        Spell leftSpell; // current spell bound to left click
+        Spell rightSpell; // current spell bound to right click
+        float leftSpellTimer = 0.0f; // timer for casting the left spell
+        float rightSpellTimer = 0.0f; // timer for casting the right spell
 };
 
 #endif
