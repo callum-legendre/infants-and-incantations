@@ -9,13 +9,13 @@ Every spell will have the following charatceristsics:
     (more to be added as it beomes relevent)
 */
 
-#include "Player.h"
-#include "InputState.h"
+// forward declarations
+class Player;
+struct InputState;
 
 namespace Ogre
 {
     class SceneManager;
-    class SceneNode;
 };
 
 class Spell
@@ -33,7 +33,7 @@ public:
         return spellCastTime;
     };
 
-    virtual void CastSpell(Player& player, InputState input){}; // casts the spell
+    virtual void CastSpell(Player& player, const InputState& input) = 0; // casts the spell
 
 protected:
     // properties

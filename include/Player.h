@@ -9,8 +9,11 @@ It exists outside of all of the LevelScenes, so it survives loading and unloadin
 #include "GameObject.h"
 #include "InputState.h"
 #include "Spell.h"
+#include <memory>
 
 // forward declarations
+class Spell;
+class GameObject;
 class btRigidBody;
 namespace Ogre
 {
