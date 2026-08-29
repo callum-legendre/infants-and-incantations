@@ -81,6 +81,16 @@ void Player::SetInput(InputState newInput)
     input = newInput;
 }
 
+void Player::SetCurrentState(PlayerState newState)
+{
+    currentState = newState;
+}
+
+PlayerState Player::GetCurrentState()
+{
+    return currentState;
+}
+
 void Player::ChargeLeftSpell(float deltaTime)
 {
     // if the left spell timer is less than the charge time then increment it
