@@ -78,10 +78,17 @@ void LevelScene::createColliders(Ogre::SceneNode* node)
             continue;
         }
 
-        // TODO: check if the object is intended to be dynamic (will be marked as such with an object binding) and apply the correct mass to it if so
+        // get the value of the mass binding, if any
+        const Ogre::Any& massBinding = entity->getUserObjectBindings().getUserAny("mass");
 
-        // create the rigidbodys attached to the entity
-        btRigidBody* newRB = worldPhysics.addRigidBody(0.0f, entity, type);
+        // make sure the binding isnt empty
+        if (!massBinding.has_value()) continue;
+
+        // cast the binding to a float value
+        const float mass = Ogre::any_cast<float>(massBinding);
+        
+        // create the rigidbody attached to the entity with the correct body type and mass
+        btRigidBody* newRB = worldPhysics.addRigidBody(mass, entity, type);
 
         // store a reference to the rigidbody in the object
         entity->getUserObjectBindings().setUserAny("bulletRigidBody", Ogre::Any(newRB));
@@ -89,7 +96,7 @@ void LevelScene::createColliders(Ogre::SceneNode* node)
         // print a success message
         Ogre::LogManager::getSingleton().logMessage(
             "Added " + collider + " collider to " +
-            entity->getName());
+            entity->getName() + " with mass " + mass);
     }
 
     // iterate through each subtree of the current node and do the same
