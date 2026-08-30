@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- exporter: blender2ogre 0.9.0 -->
-<!-- export_time: Mon, 24 Aug 2026 14:42:30 +0000 -->
+<!-- export_time: Sun, 30 Aug 2026 12:38:24 +0000 -->
 <!-- blender_version: 5.1.2 (release; Darwin) -->
-<!-- previous_export_time: Mon, 24 Aug 2026 14:28:40 +0000 -->
+<!-- previous_export_time: Mon, 24 Aug 2026 14:42:30 +0000 -->
 <scene author="callumlegendre" formatVersion="1.1" >
   <nodes >
     <node name="Light" >
@@ -22,6 +22,7 @@
       <entity meshFile="Floor.mesh" name="Floor" >
         <userData >
           <property data="trimesh" name="bulletCollider" type="str" />
+          <property data="0.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -32,6 +33,7 @@
       <entity meshFile="Wall.mesh" name="Wall" >
         <userData >
           <property data="trimesh" name="bulletCollider" type="str" />
+          <property data="0.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -42,6 +44,7 @@
       <entity meshFile="Wall.mesh" name="Wall.001" >
         <userData >
           <property data="trimesh" name="bulletCollider" type="str" />
+          <property data="0.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -52,6 +55,7 @@
       <entity meshFile="Wall.mesh" name="Wall.002" >
         <userData >
           <property data="trimesh" name="bulletCollider" type="str" />
+          <property data="0.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -62,6 +66,7 @@
       <entity meshFile="Wall.mesh" name="Wall.003" >
         <userData >
           <property data="trimesh" name="bulletCollider" type="str" />
+          <property data="0.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -72,6 +77,7 @@
       <entity meshFile="Cube.mesh" name="Cube" >
         <userData >
           <property data="box" name="bulletCollider" type="str" />
+          <property data="5.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -82,6 +88,7 @@
       <entity meshFile="Cube.mesh" name="Cube.001" >
         <userData >
           <property data="box" name="bulletCollider" type="str" />
+          <property data="5.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -92,6 +99,7 @@
       <entity meshFile="Cube.mesh" name="Cube.002" >
         <userData >
           <property data="box" name="bulletCollider" type="str" />
+          <property data="5.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -102,6 +110,7 @@
       <entity meshFile="Cube.mesh" name="Cube.003" >
         <userData >
           <property data="box" name="bulletCollider" type="str" />
+          <property data="5.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -112,6 +121,7 @@
       <entity meshFile="Cube.mesh" name="Cube.004" >
         <userData >
           <property data="box" name="bulletCollider" type="str" />
+          <property data="5.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
@@ -122,6 +132,7 @@
       <entity meshFile="Cube.mesh" name="Cube.005" >
         <userData >
           <property data="box" name="bulletCollider" type="str" />
+          <property data="5.0" name="mass" type="float" />
         </userData>
       </entity>
     </node>
