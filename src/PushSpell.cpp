@@ -17,12 +17,8 @@ void PushSpell::CastSpell(Player& player, const InputState& input)
     // get the player camera
     Ogre::Camera* camera = scnMgr.getCamera("PlayerCamera");
 
-    // convert mouse location into coordinates relative to the window
-    float viewportX = static_cast<float>(input.mLocationX) / static_cast<float>(camera->getViewport()->getActualWidth());
-    float viewportY = static_cast<float>(input.mLocationY) / static_cast<float>(camera->getViewport()->getActualHeight());
-    
-    // draw a line from the camera to the cursor position
-    Ogre::Ray ray = camera->getCameraToViewportRay(viewportX, viewportY);
+    // draw a line from the camera through the normalised cursor position.
+    Ogre::Ray ray = camera->getCameraToViewportRay(input.mLocationX, input.mLocationY);
 
     // get the player position
     Ogre::Vector3 playerPos = player.GetSceneNode()->_getDerivedPosition();

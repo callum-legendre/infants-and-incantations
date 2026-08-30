@@ -4,6 +4,10 @@
 #include <OgreEntity.h>
 #include <OgreCamera.h>
 #include <OgreBullet.h>
+#include <OgreRenderWindow.h>
+#include <OgreViewport.h>
+
+#include <algorithm>
 
 #include "PushSpell.h"
 
@@ -96,9 +100,25 @@ void GameSession::GetInput()
     // assign mouse popsition
     const Uint32 mouse = SDL_GetMouseState(&xPos, &yPos);
 
-    // assign the coordinates to the input struct
-    input.mLocationX = xPos;
-    input.mLocationY = yPos;
+    // fetch the viewport attached to the camera
+    Ogre::Viewport* viewport = playerCamera->getViewport();
+
+    // some null and zero checking for the viewport, just in case
+    if (!viewport || viewport->getActualWidth() <= 0 || viewport->getActualHeight() <= 0) {return;}
+
+    // get the renderwindow
+    auto* renderWindow = dynamic_cast<Ogre::RenderWindow*>(viewport->getTarget());
+
+    // get the point to pixel scale from the render window
+    const float pointToPixelScale = renderWindow ? renderWindow->getViewPointToPixelScale() : 1.0f;
+
+    // find the pixel that the mouse is currently located in
+    const float mousePixelX = static_cast<float>(xPos) * pointToPixelScale;
+    const float mousePixelY = static_cast<float>(yPos) * pointToPixelScale;
+
+    // convert x and y coordindates and assign them to the input struct
+    input.mLocationX = std::clamp((mousePixelX - static_cast<float>(viewport->getActualLeft())) / static_cast<float>(viewport->getActualWidth()), 0.0f, 1.0f);
+    input.mLocationY = std::clamp((mousePixelY - static_cast<float>(viewport->getActualTop())) / static_cast<float>(viewport->getActualHeight()), 0.0f, 1.0f);
 }
 
 Ogre::Camera* GameSession::GetCamera()

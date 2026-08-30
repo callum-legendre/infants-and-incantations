@@ -7,8 +7,8 @@ struct InputState
     bool left = false;
     bool back = false;
     bool right = false;
-    int mLocationX = 0;
-    int mLocationY = 0;
+    float mLocationX = 0.0f;
+    float mLocationY = 0.0f;
     bool primarySpellPressed = false;
     bool secondarySpellPressed = false;
     bool primarySpellReleased = false;
