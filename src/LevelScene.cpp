@@ -96,7 +96,7 @@ void LevelScene::createColliders(Ogre::SceneNode* node)
         // print a success message
         Ogre::LogManager::getSingleton().logMessage(
             "Added " + collider + " collider to " +
-            entity->getName() + " with mass " + mass);
+            entity->getName());
     }
 
     // iterate through each subtree of the current node and do the same
