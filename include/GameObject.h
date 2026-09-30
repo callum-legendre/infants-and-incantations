@@ -1,11 +1,17 @@
 /*
-This is the base class for all obejcts that will exist in the game, meaning every object will inherit from this class.
-Uses the 'Template Method' for the update function. OnUpdate() is overwritten to provide object specific behavior on each frame update.
-All other non-specific frame updates that are needed are done in the update() function to limit repetition of code.
+GameObject is the class that contains the data for all objects that exist in the game. It uses a component system and factories
+to allow easy modularity and to prevent diamond inheritance patterns from forming accidentally.
 */
 
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
+
+#include <unordered_map>
+#include <typeindex>
+#include <memory>
+#include <utility>
+
+#include "Component.h"
 
 namespace Ogre
 {
@@ -16,24 +22,52 @@ namespace Ogre
 class GameObject
 {
     public:
-    GameObject(Ogre::SceneManager& scnMgr, Ogre::SceneNode* sceneNode); // constructor
-    virtual ~GameObject(); // destructor
+    GameObject() = default; // constructor
+    ~GameObject() = default; // destructor (components in unordered map are destroyed automatically because of unique_ptr)
 
-    // A GameObject exclusively owns its scene node, so it must not be copied or moved.
-    GameObject(const GameObject&) = delete;
-    GameObject& operator=(const GameObject&) = delete;
-    GameObject(GameObject&&) = delete;
-    GameObject& operator=(GameObject&&) = delete;
+    // add component method
+    template <typename ComponentType, typename... Args> // template function type declaration
+    void addComponent(Args&&... args)
+    {
+        // create the component using the passed in args and type, then add it to the hash map
+        mComponentMap[typeid(ComponentType)] = std::make_unique<ComponentType>(std::forward<Args>(args)...);
+    }
 
-    virtual void update(float deltaTime) {} // update that runs every frame, is overriden in child classes
-    
-    Ogre::SceneNode* GetSceneNode() {return sceneNode;} // get method for the corresponding scene node
+    // get component method
+    template <typename ComponentType> // also templated
+    ComponentType* getComponent()
+    {
+        // get the type index of the component to get
+        std::type_index typeIndex = typeid(ComponentType);
 
-    protected: // proporties + methods that can be accessed by child classes
-    Ogre::SceneManager& scnMgr;
-    Ogre::SceneNode* sceneNode = nullptr;
+        // search map for it
+        auto found = mComponentMap.find(typeIndex);
+
+        // if not found return nullptr
+        if (found == mComponentMap.end()){
+            return nullptr;
+        }
+        else {
+            // else return the component
+            return static_cast<ComponentType*>(found->second.get());
+        }
+    }
+
+    // update method
+    void update(float deltaTime)
+    {
+        // TODO: iterate through all components in specific order???
+        for (auto& [type, component] : mComponentMap){
+            component->update(deltaTime);
+        }
+    }
 
     private:
+
+    // component hashmap (should be unordered for O(1) time complexity)
+    std::unordered_map<std::type_index, std::unique_ptr<Component>> mComponentMap;
+
+
 };
 
 #endif
