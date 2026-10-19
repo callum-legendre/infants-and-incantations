@@ -1,35 +1,30 @@
 /*
-GameObject is the class that contains the data for all objects that exist in the game. It uses a component system and factories
-to allow easy modularity and to prevent diamond inheritance patterns from forming accidentally.
+This file contains both the container class that will actually be bound to the the scenenode
+The container object will be the function to actually store each component, and will contain member functions for this end.
 */
 
-#ifndef GAMEOBJECT_H
-#define GAMEOBJECT_H
+#include "components/Component.h"
 
 #include <unordered_map>
 #include <typeindex>
-#include <memory>
-#include <utility>
-
-#include "Component.h"
+// #include <memory>
+// #include <utility>
 
 namespace Ogre
 {
-    class SceneManager;
     class SceneNode;
 }
 
-class GameObject
+class ComponentManager
 {
     public:
-    GameObject() = default; // constructor
-    ~GameObject() = default; // destructor (components in unordered map are destroyed automatically because of unique_ptr)
+
+    ComponentManager(Ogre::SceneNode& parent) : mParent(parent);
 
     // add component method
     template <typename ComponentType, typename... Args> // template function type declaration
     void addComponent(Args&&... args)
     {
-        // create the component using the passed in args and type, then add it to the hash map
         mComponentMap[typeid(ComponentType)] = std::make_unique<ComponentType>(std::forward<Args>(args)...);
     }
 
@@ -53,21 +48,24 @@ class GameObject
         }
     }
 
-    // update method
-    void update(float deltaTime)
+    template <typename ComponentType> // has function that returns a bool
+    bool HasComponent()
     {
-        // TODO: iterate through all components in specific order???
-        for (auto& [type, component] : mComponentMap){
-            component->update(deltaTime);
+        if (mComponentMap.find(typeid(ComponentType)) == mComponentMap.end()){
+            return false;
+        }
+        else {
+            return true;
         }
     }
 
+    // an update member function maybe?
+
     private:
 
-    // component hashmap (should be unordered for O(1) time complexity)
+    // component hashmap (should be unordered for O(1) indexing complexity)
     std::unordered_map<std::type_index, std::unique_ptr<Component>> mComponentMap;
 
+    Ogre::SceneNode& mParent;
 
 };
-
-#endif
