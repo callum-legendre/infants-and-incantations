@@ -11,6 +11,7 @@ as this allows for more flexibility rather than all of them being in a class.
 #include "components/PhysicsComponent.h"
 
 #include "scripts/PlayerScript.h"
+#include "scripts/PlayerCameraScript.h"
 
 namespace Ogre
 {
@@ -25,6 +26,7 @@ namespace Ogre
 namespace ObjectFactory
 {
     Ogre::SceneNode* CreatePlayer(Ogre::SceneNode* parent, Ogre::Bullet::DynamicsWorld& worldPhysics);
+    Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent);
     Ogre::SceneNode* CreateBox(Ogre::SceneNode* parent, Ogre::Bullet::DynamicsWorld& worldPhysics);
 };
 

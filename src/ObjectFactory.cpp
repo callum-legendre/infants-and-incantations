@@ -32,6 +32,28 @@ namespace ObjectFactory
             return player;
         }
     
+        Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent)
+        {
+            Ogre::SceneNode* cameraNode = parent->createChildSceneNode("playerCameraNode");
+
+            // move camera node to correct starting position
+            cameraNode->setPosition(0, 0, 15);
+            cameraNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
+        
+            // create the camera
+            Ogre::Camera* cam = cameraNode->getCreator()->createCamera("playerCamera");
+            cam->setNearClipDistance(5);
+            cam->setAutoAspectRatio(true);
+            cameraNode->attachObject(cam);
+
+            std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(cameraNode);
+            cameraNode->setUserAny(manager);
+
+            manager->AddComponent<PlayerCameraScript>(std::make_unique<PlayerCameraScript>(manager));
+
+            return cameraNode;
+        }
+
     // -- configure functions --
         void ConfigureBox(Ogre::SceneNode* boxNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
         {
