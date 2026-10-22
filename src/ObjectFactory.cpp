@@ -9,6 +9,7 @@
 
 namespace ObjectFactory
 {
+    // -- create functions -- 
         Ogre::SceneNode* CreatePlayer(Ogre::SceneNode* parent, Ogre::Bullet::DynamicsWorld& worldPhysics)
         {
             Ogre::SceneNode* player = parent->createChildSceneNode("player");
@@ -31,3 +32,22 @@ namespace ObjectFactory
             return player;
         }
     
+    // -- configure functions --
+        void ConfigureBox(Ogre::SceneNode* boxNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
+        {
+            std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(boxNode);
+            boxNode->setUserAny(manager);
+
+            float boxMass = 1.0f;
+            Ogre::Entity* boxMesh = dynamic_cast<Ogre::Entity*>(boxNode->getAttachedObject(0)); // the first attached object is guaranteed to be the entity (for boxes, at least)
+            btRigidBody* rb = worldPhysics.addRigidBody(boxMass, boxMesh, Ogre::Bullet::CT_BOX);
+
+            manager->AddComponent<PhysicsComponent>(std::make_unique<PhysicsComponent>(manager, rb));
+        }
+
+    namespace // namespace is blank to act as pseudo private functions for the factories
+    {
+        
+    }
+
+}
