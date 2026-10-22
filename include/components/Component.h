@@ -14,7 +14,7 @@ class Component
     Component(ComponentManager& parent) : mParent(parent) {} // constructor
     virtual ~Component() = default; // destructor that is overriden
 
-    virtual void update(float deltaTime) {} // empty update method to be overwritten by the on frame behavior of each component
+    virtual void Update(float deltaTime) {} // empty update method to be overwritten by the on frame behavior of each component
 
     private:
 
