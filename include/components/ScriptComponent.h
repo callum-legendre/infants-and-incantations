@@ -3,7 +3,7 @@
 
 /*
 This is the declaration of a base script class that all scripts will inherit from.
-This inheritance pattern is so that they can be managed by the component manager still and 
+This inheritance pattern is so that they can be managed by the component manager
 */
 
 #include "components/Component.h"
