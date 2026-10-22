@@ -10,12 +10,12 @@ This inheritance pattern is so that they can be managed by the component manager
 
 class ComponentManager;
 
-class ScriptComponent : Component
+class ScriptComponent : protected Component
 {
     public:
     ScriptComponent(ComponentManager& parent) : Component(parent) {}
 
-    virtual void Update() {}
+    virtual void Update(float deltaTime) {}
 
     private:
 

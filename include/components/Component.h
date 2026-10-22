@@ -15,8 +15,8 @@ class Component
     virtual ~Component() = default; // destructor that is overriden
 
     virtual void Update(float deltaTime) {} // empty update method to be overwritten by the on frame behavior of each component
-
-    private:
+    
+    protected:
 
     ComponentManager& mParent; // reference to the owner of the component
 };

@@ -5,12 +5,12 @@
 
 class ComponentManager;
 
-class PlayerScript : ScriptComponent
+class PlayerScript : protected ScriptComponent
 {
     public:
     PlayerScript(ComponentManager& parent);
 
-    void Update() override;
+    void Update(float deltaTime) override;
 
     private:
 

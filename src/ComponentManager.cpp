@@ -32,7 +32,7 @@ ComponentType* ComponentManager::GetComponent()
 }
 
 template <typename ComponentType> // has function that returns a bool
-bool HasComponent()
+bool ComponentManager::HasComponent()
 {
     if (mComponentMap.find(typeid(ComponentType)) == mComponentMap.end()){
         return false;
@@ -40,4 +40,9 @@ bool HasComponent()
     else {
         return true;
     }
+}
+
+Ogre::SceneNode* ComponentManager::GetParentNode()
+{
+    return mParent;
 }

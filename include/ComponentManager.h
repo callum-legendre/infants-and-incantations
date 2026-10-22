@@ -33,6 +33,8 @@ class ComponentManager
     // runs each frame update. Updates all components in the correct order
     void Update();
 
+    Ogre::SceneNode* GetParentNode();
+
     private:
 
     // component hashmap (should be unordered for O(1) indexing complexity)
