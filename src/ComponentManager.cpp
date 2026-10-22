@@ -2,11 +2,7 @@
 
 #include "components/Component.h"
 
-#include <unordered_map>
-#include <typeindex>
-// #include <memory>
-// #include <utility>
-
+ComponentManager::ComponentManager(Ogre::SceneNode* parent) : mParent(parent) {}
 
 // add component method
 template <typename ComponentType, typename... Args> // template function type declaration

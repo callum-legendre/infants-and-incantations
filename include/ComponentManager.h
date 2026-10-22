@@ -3,16 +3,23 @@ This file contains both the container class that will actually be bound to the t
 The container object will be the function to actually store each component, and will contain member functions for this end.
 */
 
+#include <unordered_map>
+#include <typeindex>
+// #include <memory>
+// #include <utility>
+
 namespace Ogre
 {
     class SceneNode;
 }
 
+class Component;
+
 class ComponentManager
 {
     public:
 
-    ComponentManager(Ogre::SceneNode& parent) : mParent(parent) {}
+    ComponentManager(Ogre::SceneNode* parent);
 
     // creates a specific component stores its
     template <typename ComponentType, typename... Args> void AddComponent(Args&&... args); // template function type declaration
@@ -32,6 +39,6 @@ class ComponentManager
     std::unordered_map<std::type_index, std::unique_ptr<Component>> mComponentMap;
 
     // reference to the scene node that all components are attached to
-    Ogre::SceneNode& mParent;
+    Ogre::SceneNode* mParent;
 
 };

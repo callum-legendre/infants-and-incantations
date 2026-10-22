@@ -15,6 +15,8 @@ class ScriptComponent : Component
     public:
     ScriptComponent(ComponentManager& parent) : Component(parent) {}
 
+    virtual void Update() {}
+
     private:
 
 };
