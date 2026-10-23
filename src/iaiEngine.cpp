@@ -100,7 +100,7 @@ void Engine::Run()
 void Engine::viewportInitialise()
 {
     // get the camera
-    Ogre::Camera* cam = session->GetCamera();
+    Ogre::Camera* cam = scnMgr->getSceneNode("PlayerCameraNode")->getAttachedObject(0); // we know it is the only (and therefore first) object attached to the node 
 
     // tell it to render that camera into the window
     vp = mRenderWindow->addViewport(cam);

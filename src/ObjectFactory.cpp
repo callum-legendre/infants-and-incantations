@@ -12,7 +12,7 @@ namespace ObjectFactory
     // -- create functions -- 
         Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent, Ogre::SceneNode* player)
         {
-            Ogre::SceneNode* cameraNode = parent->createChildSceneNode("playerCameraNode");
+            Ogre::SceneNode* cameraNode = parent->createChildSceneNode("PlayerCameraNode");
 
             // move camera node to correct starting position
             cameraNode->setPosition(0, 0, 15);
