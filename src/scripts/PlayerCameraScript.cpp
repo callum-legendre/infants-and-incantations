@@ -6,16 +6,15 @@
 #include "OgreSceneNode.h"
 #include "OgreSceneManager.h"
 
-PlayerCameraScript::PlayerCameraScript(ComponentManager& parent) : ScriptComponent(parent) {}
+PlayerCameraScript::PlayerCameraScript(ComponentManager& parent, Ogre::SceneNode* player) : ScriptComponent(parent), mPlayerReference(player) {}
 
 void PlayerCameraScript::Update(float deltaTime)
 {
     // get the player node
     Ogre::SceneNode* cameraNode = mParent.GetParentNode();
-    Ogre::SceneNode* playerNode = cameraNode->getCreator()->getSceneNode("player");
 
     // get the player's position in world coordinates
-    Ogre::Vector3 playerPos = playerNode->_getDerivedPosition();
+    Ogre::Vector3 playerPos = mPlayerReference->_getDerivedPosition();
     // get target position of the camera
     Ogre::Vector3 targetPos = playerPos + Ogre::Vector3(0.0f, 8.0f, 12.0f);
 

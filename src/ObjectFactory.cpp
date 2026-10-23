@@ -10,7 +10,7 @@
 namespace ObjectFactory
 {
     // -- create functions -- 
-        Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent)
+        Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent, Ogre::SceneNode* player)
         {
             Ogre::SceneNode* cameraNode = parent->createChildSceneNode("playerCameraNode");
 
@@ -27,7 +27,7 @@ namespace ObjectFactory
             std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(cameraNode);
             cameraNode->setUserAny(manager);
 
-            manager->AddComponent<PlayerCameraScript>(std::make_unique<PlayerCameraScript>(manager));
+            manager->AddComponent<PlayerCameraScript>(std::make_unique<PlayerCameraScript>(manager, player));
 
             return cameraNode;
         }
