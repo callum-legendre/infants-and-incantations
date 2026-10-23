@@ -62,9 +62,6 @@ class ComponentManager
         }
     }
 
-    // runs each frame update. Updates all components in the correct order
-    void Update();
-
     void UpdateScripts(float deltaTime);
 
     Ogre::SceneNode* GetParentNode();

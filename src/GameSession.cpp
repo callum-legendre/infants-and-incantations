@@ -1,8 +1,6 @@
 #include "GameSession.h"
 
 #include <OgreSceneManager.h>
-#include <OgreEntity.h>
-#include <OgreCamera.h>
 #include <OgreBullet.h>
 
 GameSession::GameSession(Ogre::SceneManager& scnMgr) : worldPhysics(std::make_unique<Ogre::Bullet::DynamicsWorld>(Ogre::Vector3(0.0f, -9.81f, 0.0f))), scnMgr(scnMgr)

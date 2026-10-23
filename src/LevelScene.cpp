@@ -96,13 +96,9 @@ void LevelScene::Unload()
 
     // set relevant pointers to null
     mRootNode = nullptr;
-    mTerrainNode = nullptr;
 
     // destroy the plane mesh
     auto& meshManager = Ogre::MeshManager::getSingleton();
-
-    if (meshManager.resourceExists("LevelTerrainMesh"))
-        meshManager.remove("LevelTerrainMesh");
 }
 
 LevelScene::~LevelScene()
@@ -124,9 +120,10 @@ void LevelScene::Input(Ogre::Node* parent)
 
             std::shared_ptr<ComponentManager> manager = Ogre::any_cast<std::shared_ptr<ComponentManager>>(managerAny);
 
-            if (manager->HasComponent<InputComponent>()){
+            InputComponent* inputComponent = manager->GetComponent<InputComponent>();
 
-                manager->GetComponent<InputComponent>()->OnInput();
+            if (!inputComponent){
+                inputComponent->OnInput();
             }
         }
 
