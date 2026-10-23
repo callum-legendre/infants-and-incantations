@@ -70,13 +70,16 @@ set_property(DIRECTORY "${ogre_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL TRUE)
 
 add_executable(iai MACOSX_BUNDLE
     src/main.cpp
-    src/GameObject.cpp
     src/iaiEngine.cpp
     src/iaiEngineMac.mm
     src/LevelScene.cpp
-    src/Player.cpp
-    src/PlayerCamera.cpp
     src/GameSession.cpp
+    src/ComponentManager.cpp
+    src/ObjectFactory.cpp
+    src/components/InputComponent.cpp
+    src/components/PhysicsComponent.cpp
+    src/scripts/PlayerCameraScript.cpp
+    src/scripts/PlayerScript.cpp
 )
 
 set_target_properties(iai PROPERTIES

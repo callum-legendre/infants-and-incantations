@@ -1,38 +1,44 @@
 #include "LevelScene.h" // header file
 
+#include "ObjectFactory.h"
+#include "ComponentManager.h"
+#include "ObjectNames.h"
+
+#include <string>
+#include <memory>
+
 // ogre includes
-#include <OgreEntity.h>
-#include <OgreLight.h>
-#include <OgreMeshManager.h>
-#include <OgrePlane.h>
-#include <OgreResourceGroupManager.h>
-#include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
-#include <OgreBullet.h>
-#include <OgreLogManager.h>
+#include "OgreSceneManager.h"
+#include "OgreLight.h"
+#include "OgreBullet.h"
+#include "OgreSceneNode.h"
+#include "OgreUserObjectBindings.h"
+#include "OgreEntity.h"
 
 LevelScene::LevelScene(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics) : scnMgr(scnMgr), worldPhysics(worldPhysics)
 {} // takes screen manager and the game dynamic as an argument
 
-void LevelScene::load()
+void LevelScene::Load()
 {
     // create pseudo root node for the level
-    rootNode = scnMgr.getRootSceneNode()->createChildSceneNode("LevelRoot");
+    mRootNode = scnMgr.getRootSceneNode()->createChildSceneNode("LevelRoot");
 
     // load the DotScene
-    rootNode->loadChildren("testScene.scene");
+    mRootNode->loadChildren("testScene.scene");
 
-    createColliders(rootNode); // create the colliders and attach them to all objects that need it
-    createLighting(); // create the lighting
+    ObjectFactory::CreatePlayerCamera(mRootNode, scnMgr.getSceneNode(ObjectNames::Player));
+
+    CreateComponents(); // create the colliders and attach them to all objects that need it
+    CreateLighting(); // TEMPORARY AS MY TEST SCENE DOES NOT HAVE ANY LIGHTING BY DEFAULT
 }
 
-void LevelScene::createLighting()
+void LevelScene::CreateLighting()
 {
     // create light
     Ogre::Light* light = scnMgr.createLight("LevelMainLight");
 
     // create the light node
-    Ogre::SceneNode* lightNode = rootNode->createChildSceneNode();
+    Ogre::SceneNode* lightNode = mRootNode->createChildSceneNode();
 
     // set position of the light
     lightNode->setPosition(0, 10, 15);
@@ -41,97 +47,107 @@ void LevelScene::createLighting()
     lightNode->attachObject(light);
 }
 
-void LevelScene::createColliders(Ogre::SceneNode* node)
+void LevelScene::CreateComponents(Ogre::Node* node)
 {
-    // iterate through all attached objects of the node that was passed in
-    for (const auto& entry : node->getAttachedObjects())
-    {
-        // get the next object
-        auto* entity = dynamic_cast<Ogre::Entity*>(entry);
-
-        // if not an entity, then go to the next object
-        if (!entity) continue;
-
-        // get the value of the object binding that is "bulletCollider"
-        const Ogre::Any& value = entity->getUserObjectBindings().getUserAny("bulletCollider");
-
-        // if there is no value then skip
-        if (!value.has_value()) continue;
-
-        // get the string value of the object binding
-        const Ogre::String collider = Ogre::any_cast<Ogre::String>(value);
-
-        // get the correct collider type from the string
-        Ogre::Bullet::ColliderType type;
-        if (collider == "box")
-            type = Ogre::Bullet::CT_BOX;
-        else if (collider == "trimesh")
-            type = Ogre::Bullet::CT_TRIMESH;
-        else if (collider == "hull")
-            type = Ogre::Bullet::CT_HULL;
-        else
-        {
-            // throw an error if there is a different value in there
-            Ogre::LogManager::getSingleton().logWarning(
-                "Invalid bulletCollider value '" + collider +
-                "' on entity '" + entity->getName() + "'");
-            continue;
-        }
-
-        // create the rigidbodys attached to the entity
-        worldPhysics.addRigidBody(0.0f, entity, type);
-
-        // print a success message
-        Ogre::LogManager::getSingleton().logMessage(
-            "Added " + collider + " collider to " +
-            entity->getName());
+    if (node == nullptr){
+        node = mRootNode;
     }
 
-    // iterate through each subtree of the current node and do the same
-    for (const auto& entry : node->getChildren())
+    // iterate through all attached objects of the node that was passed in
+    for (Ogre::Node* child : node->getChildren())
     {
-        createColliders(
-            static_cast<Ogre::SceneNode*>(entry));
+        Ogre::SceneNode* sceneNode = static_cast<Ogre::SceneNode*>(child);
+
+        for (Ogre::MovableObject* object : sceneNode->getAttachedObjects()){
+
+            Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(object);
+
+            if (!entity) continue;
+
+            const auto& value = entity->getUserObjectBindings().getUserAny("objectType");
+
+            // if there is no value then skip
+            if (!value.has_value()) continue;
+
+            // get the string value of the object binding
+            std::string objectType = Ogre::any_cast<std::string>(value);
+
+            ObjectFactory::ConfigureObjectComponents(objectType, child, worldPhysics);
+
+            break;
+        }
+
+        CreateComponents(child);
     }
 }
 
-void LevelScene::unload()
+void LevelScene::Unload()
 {
     // null check on the root node just in case
-    if (!rootNode){
+    if (!mRootNode){
         return;
     }
 
-    // GameObjects own their scene nodes, so destroy them before the level root.
-    gameObjects.clear();
-
     // destroy everything else in the scene
-    rootNode->destroyAllChildrenAndObjects();
+    mRootNode->destroyAllChildrenAndObjects();
 
     // destroy the pseudo root
-    scnMgr.destroySceneNode(rootNode);
+    scnMgr.destroySceneNode(mRootNode);
 
     // set relevant pointers to null
-    rootNode = nullptr;
-    terrainNode = nullptr;
+    mRootNode = nullptr;
 
     // destroy the plane mesh
     auto& meshManager = Ogre::MeshManager::getSingleton();
-
-    if (meshManager.resourceExists("LevelTerrainMesh"))
-        meshManager.remove("LevelTerrainMesh");
 }
 
 LevelScene::~LevelScene()
 {
-    unload();
+    Unload();
 }
 
-void LevelScene::update(float deltaTime)
+void LevelScene::Input(Ogre::Node* parent)
 {
-    // loop through all gameObjects and call update on them
-    for (auto& gameObject : gameObjects)
-    {
-        gameObject->update(deltaTime);
+    if (parent == nullptr){
+        parent = mRootNode;
+    }
+
+    // iterate through each node
+    for (Ogre::Node* child : parent->getChildren()){
+
+        Ogre::Any managerAny = child->getUserObjectBindings().getUserAny("ComponentManager");
+        if (!managerAny.isEmpty()){
+
+            std::shared_ptr<ComponentManager> manager = Ogre::any_cast<std::shared_ptr<ComponentManager>>(managerAny);
+
+            InputComponent* inputComponent = manager->GetComponent<InputComponent>();
+
+            if (!inputComponent){
+                inputComponent->OnInput();
+            }
+        }
+
+        Input(child);
+    }
+}
+
+void LevelScene::Update(float deltaTime, Ogre::Node* parent)
+{
+    if (parent == nullptr){
+        parent = mRootNode;
+    }
+
+    // iterate through each node for the scripts
+    for (Ogre::Node* child : parent->getChildren()){
+
+        Ogre::Any managerAny = child->getUserObjectBindings().getUserAny("ComponentManager");
+        if (!managerAny.isEmpty()){
+
+            std::shared_ptr<ComponentManager> manager = Ogre::any_cast<std::shared_ptr<ComponentManager>>(managerAny);
+
+            manager->UpdateScripts(deltaTime);
+        }
+
+        Update(deltaTime, child);
     }
 }

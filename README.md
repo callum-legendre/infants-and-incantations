@@ -23,7 +23,7 @@ Implemented:
 
 In progress:
 
-- Player spell casting
+- Player spell casting, and the foundations of a system that would allow the player to switch spells out
 
 Planned for the vertical slice:
 

@@ -57,6 +57,11 @@ private:
     void prepareMaterials();
     std::filesystem::path getResourceDirectory() const;
     void RTSSInitialise();
+    void Input();
+    void Update(float deltaTime);
+    void Render();
+
+    bool mRunning = false;
 };
 
 #endif

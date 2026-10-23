@@ -1,14 +1,12 @@
 #ifndef LEVELSCENE_H
 #define LEVELSCENE_H
 
-#include <vector>
-#include "GameObject.h"
-
 namespace Ogre
 {
     class SceneManager;
     class SceneNode;
     class Entity;
+    class Node;
 
     namespace Bullet
     {
@@ -24,11 +22,11 @@ public:
     ~LevelScene();
 
     // load and unload functions initialise and shutdown the level
-    void load();
-    void unload();
+    void Load();
+    void Unload();
 
-    // update function runs every frame
-    void update(float deltaTime);
+    void Update(float deltaTime, Ogre::Node* = nullptr);
+    void Input(Ogre::Node* parent = nullptr);
 
 private:
     // world properties
@@ -36,13 +34,11 @@ private:
     Ogre::Bullet::DynamicsWorld& worldPhysics;
 
     // non-passed proporties of the level
-    Ogre::SceneNode* rootNode = nullptr;
-    Ogre::SceneNode* terrainNode = nullptr;
-    std::vector<std::unique_ptr<GameObject>> gameObjects;
+    Ogre::SceneNode* mRootNode = nullptr;
     
     // methods
-    void createColliders(Ogre::SceneNode* node);
-    void createLighting();
+    void CreateComponents(Ogre::Node* node = nullptr);
+    void CreateLighting();
 };
 
 
