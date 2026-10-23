@@ -1,6 +1,6 @@
 # Infants and Incantations
 
-A solo C++ vertical-slice prototype exploring game-engine architecture, real-time rendering, physics, and gameplay systems with OGRE, SDL2, and Bullet.
+A solo C++ action-RPG prototype focused on engine integration and component-based gameplay. I implemented the SDL2–OGRE integration, application lifecycle, component system, gameplay scripts, and macOS packaging, using OGRE for rendering and Bullet for physics.
 
 ## Overview
 
@@ -20,10 +20,11 @@ Implemented:
 - Runtime asset and material loading with OGRE's RT Shader System
 - Smooth camera rig that follows and tracks the player
 - Installable macOS application bundle assembled by CMake
+- Reusable input, physics, and gameplay-script components attached to OGRE scene nodes
 
 In progress:
 
-- Player spell casting, and the foundations of a system that would allow the player to switch spells out
+- Player spell casting and runtime swapping of equipped spells
 
 Planned for the vertical slice:
 
@@ -57,16 +58,24 @@ Planned for the vertical slice:
 
 The project separates platform and rendering setup from game-specific state and behaviour:
 
-| Component | Responsibility |
+| Class | Responsibility |
 | --- | --- |
 | `Engine` | Initialises SDL and OGRE, loads resources, owns the application loop, and renders each frame |
-| `GameSession` | Owns the physics world, player, camera, and active level; coordinates their update order |
+| `GameSession` | Owns the physics world and active level |
 | `LevelScene` | Loads and unloads level resources and updates level-owned game objects |
-| `GameObject` | Provides a base class from which gameplay objects inherit, with exclusive ownership of an OGRE scene node |
-| `Player` | Reads input and applies movement and rotation through a Bullet rigid body |
-| `PlayerCamera` | Smoothly follows the player's scene node and keeps the camera aimed at the player |
+| `ObjectFactory` | Configures and attaches the components for each SceneNode, and creates and configures the player camera node |
+| `ComponentManager` | Owns all of the components for a scene node and provides templated methods to add, retrieve, and check for components |
+| `InputComponent` | Reads keyboard input and stores movement state |
+| `PhysicsComponent` | References a Bullet rigid body and provides movement and rotation behaviour |
+| `ScriptComponent` | Provides the base interface for each gameplay script |
+| `PlayerScript` | The main script for the player. Controls player movement by fetching the user's input from `InputComponent` |
+| `PlayerCameraScript` | Controls the movement of the camera that follows the player |
 
-At runtime, input updates the player, Bullet advances the physics simulation, OGRE scene nodes receive the resulting transforms, the camera follows the player, and OGRE renders the frame.
+Each configured scene node stores a `ComponentManager` through OGRE's user object bindings. The manager owns one component per concrete type, allowing scripts to access other components on the same object.
+
+During level loading, `LevelScene` reads the `objectType` metadata on imported entities and asks `ObjectFactory` to configure them. The player receives input, physics, and player-script components; boxes and terrain receive physics components. The camera receives its own follow script.
+
+Each frame, the level dispatches input and updates scripts, then `GameSession` advances Bullet's physics simulation. OgreBullet synchronises physics transforms with OGRE scene nodes before rendering.
 
 ## Engineering Problems and Solutions
 
@@ -78,21 +87,23 @@ At runtime, input updates the player, Bullet advances the physics simulation, OG
 
 **Result:** The project now has a resizable, high-DPI SDL window rendered through OGRE's OpenGL 3+ backend, with explicit control over application startup, resizing, frame updates, and shutdown.
 
-### A single source of truth for game object transforms
+### Moving from inheritance to components
 
-**Problem:** My initial [`GameObject`](src/GameObject.cpp) design stored a custom transform alongside the transform already owned by its OGRE scene node. When I introduced Bullet, the physics integration updated the scene node while the custom transform remained unchanged. The two representations could therefore disagree about an object's position and rotation.
+**Problem:** My initial design used `Player` and `PlayerCamera` classes derived from `GameObject`. As I added physics and input handling, I wanted those capabilities to be reusable across different objects. After learning about component-based design in my Building Game Engines course, I applied it to the prototype.
 
-**Solution:** I removed the redundant transform abstraction and made each object's OGRE scene node the single source of truth for its scene transform. OgreBullet can now write physics updates directly to the scene node without requiring duplicate position and rotation state to be synchronised manually.
+**Solution:** I replaced the specialised object classes with components attached to OGRE scene nodes. Each node's `ComponentManager` owns its components and provides templated methods to add and retrieve them. `PlayerScript` combines input and physics components to control movement, while `ObjectFactory` configures component combinations using metadata from the loaded scene.
 
-**Result:** Removing the duplicate state eliminated the risk of desynchonsized transforms and simplified communication between physics and rendering.
+**Result:** The player, boxes, and terrain now share `PhysicsComponent`, while only the player receives `InputComponent` and `PlayerScript`. Camera-follow behaviour lives in a separate script. This lets objects share capabilities without adding more subclasses.
+
+**Tradeoff:** Component combinations are currently configured in C++ factory functions. Scene metadata selects among supported object types; it does not yet define arbitrary combinations of components.
 
 ### Reproducible macOS packaging
 
 **Problem:** The application initially depended on OGRE frameworks, plugins, configuration files, and media stored inside the local build directory. As a result, the bundle worked only in my local environment and could not be moved or shared reliably.
 
-**Solution:** I configured CMake to fetch the pinned OGRE 14.5.2 source, build only the required rendering and physics components, and copy every runtime dependency into an installable `.app` bundle. The install process fixes the bundled library paths and applies an ad-hoc code signature, producing an application that runs independently of the build directory.
+**Solution:** I configured CMake to fetch the pinned OGRE 14.5.2 source, build only the required rendering and physics components, and copy every runtime dependency into an installable `.app` bundle. The install process fixes the bundled library paths and signs the app locally, producing an application that runs independently of the build directory.
 
-**Result:** The installed application is self-contained and relocatable, and it runs independently of the build directory on the tested macOS configuration.
+**Result:** The installed application is self-contained and relocatable, and it runs independently of the build directory on an Apple M3 Mac running macOS Tahoe 26.5.2. Further testing on other devices remains to be done.
 
 ## Building and Running
 
