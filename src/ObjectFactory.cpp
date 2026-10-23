@@ -2,6 +2,7 @@
 #include "OgreSceneNode.h"
 #include "OgreEntity.h"
 #include "OgreBullet.h"
+#include "OgreUserObjectBindings.h"
 
 // all of the component and script includes were moved to the header file to save some space
 
@@ -25,7 +26,8 @@ namespace ObjectFactory
             cameraNode->attachObject(cam);
 
             std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(cameraNode);
-            cameraNode->setUserAny(manager);
+            Ogre::UserObjectBindings bindings = cameraNode->getUserObjectBindings();
+            bindings.setUserAny("ComponentManager", manager);
 
             manager->AddComponent<PlayerCameraScript>(std::make_unique<PlayerCameraScript>(manager, player));
 
@@ -42,7 +44,8 @@ namespace ObjectFactory
             rb->setAngularFactor(btVector3(0, 0, 0)); // prevent the capsule from topping which makes the baby roll
 
             std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(playerNode);
-            playerNode->setUserAny(manager);
+            Ogre::UserObjectBindings bindings = playerNode->getUserObjectBindings();
+            bindings.setUserAny("ComponentManager", manager);
 
             manager->AddComponent<InputComponent>(std::make_unique<InputComponent>(manager));
             manager->AddComponent<PhysicsComponent>(std::make_unique<PhysicsComponent>(manager, rb));
@@ -52,7 +55,8 @@ namespace ObjectFactory
         void ConfigureBox(Ogre::SceneNode* boxNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
         {
             std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(boxNode);
-            boxNode->setUserAny(manager);
+            Ogre::UserObjectBindings bindings = boxNode->getUserObjectBindings();
+            bindings.setUserAny("ComponentManager", manager);
 
             float boxMass = 1.0f;
             Ogre::Entity* boxMesh = dynamic_cast<Ogre::Entity*>(boxNode->getAttachedObject(0)); // the first attached object is guaranteed to be the entity (for boxes, at least)
