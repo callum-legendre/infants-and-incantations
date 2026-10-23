@@ -57,6 +57,9 @@ private:
     void prepareMaterials();
     std::filesystem::path getResourceDirectory() const;
     void RTSSInitialise();
+    void Input();
+    void Update();
+    void Render();
 };
 
 #endif

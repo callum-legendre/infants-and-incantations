@@ -91,44 +91,9 @@ void Engine::Run()
         // clamp deltatime to ensure no funny buisness when unusually large values occur
         const float clampedTime = std::min(deltaTime, 0.1f);
 
-        // update the game
-        session->update(clampedTime);
-
-        // SDL event variable, whenever something happens to the window it will be reflected in this variable
-        SDL_Event e;
-        // if something happens to the window, enter this loop
-        while (SDL_PollEvent(&e))
-        {
-            // handle the window behavior depending on the event 
-            switch(e.type)
-            {
-                case SDL_QUIT: // if the window was closed, then exit the frame loop
-                    running = false;
-                    break;
-                case SDL_WINDOWEVENT: // if other event, then resize the window properly
-                if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-
-                    int w, h;
-                    SDL_GetWindowSize(mWindow, &w, &h);
-
-                    mRenderWindow->resize(w, h);
-                    mRenderWindow->windowMovedOrResized();
-                }
-                break;
-            }
-        }
-
-        // check to see if the window was closed here for redundancy
-        if (mRenderWindow->isClosed()){
-            running = false;
-            break;
-        }
-
-        // update the frame as long as the window is open
-        SDL_PumpEvents();
-        if (!root->renderOneFrame()) {
-            running = false;
-        }
+        Input();
+        Update();
+        Render();
     }
 }
 
@@ -264,5 +229,55 @@ void Engine::prepareMaterials()
         shadergen->validateMaterial(
             Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME,
             *material);
+    }
+}
+
+void Engine::Input()
+{
+    // SDL event variable, whenever something happens to the window it will be reflected in this variable
+    SDL_Event e;
+    // if something happens to the window, enter this loop
+    while (SDL_PollEvent(&e))
+    {
+        // handle the window behavior depending on the event 
+        switch(e.type)
+        {
+            case SDL_QUIT: // if the window was closed, then exit the frame loop
+                running = false;
+                break;
+            case SDL_WINDOWEVENT: // if other event, then resize the window properly
+            if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+
+                int w, h;
+                SDL_GetWindowSize(mWindow, &w, &h);
+
+                mRenderWindow->resize(w, h);
+                mRenderWindow->windowMovedOrResized();
+            }
+            break;
+        }
+    }
+
+    session->Input();
+}
+
+void Engine::Update()
+{
+    // update the game
+    session->Update(clampedTime);
+}
+
+void Engine::Render()
+{
+    // check to see if the window was closed here for redundancy
+    if (mRenderWindow->isClosed()){
+        running = false;
+        break;
+    }
+
+    // update the frame as long as the window is open
+    SDL_PumpEvents();
+    if (!root->renderOneFrame()) {
+        running = false;
     }
 }
