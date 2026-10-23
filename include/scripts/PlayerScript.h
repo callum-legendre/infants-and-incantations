@@ -5,7 +5,7 @@
 
 class ComponentManager;
 
-class PlayerScript : protected ScriptComponent
+class PlayerScript : public ScriptComponent
 {
     public:
     PlayerScript(ComponentManager& parent);
@@ -13,6 +13,8 @@ class PlayerScript : protected ScriptComponent
     void Update(float deltaTime) override;
 
     private:
+
+    void MovePlayer();
 
     static constexpr float mMoveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
 };

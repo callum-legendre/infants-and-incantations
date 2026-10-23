@@ -40,7 +40,7 @@ private:
     Ogre::SceneNode* mTerrainNode = nullptr;
     
     // methods
-    void CreateComponents(Ogre::Node* node);
+    void CreateComponents(Ogre::Node* node = nullptr);
     void CreateLighting();
 };
 

@@ -3,19 +3,19 @@
 #include "components/InputComponent.h"
 #include "components/PhysicsComponent.h"
 
-#include "OgreBullet"
+#include "OgreBullet.h"
 #include "OgreVector.h"
 
 PlayerScript::PlayerScript(ComponentManager& parent) : ScriptComponent(parent) {}
 
-void PlayerScript::Update()
+void PlayerScript::Update(float deltaTime)
 {
     MovePlayer();
 }
 
-void MovePlayer()
+void PlayerScript::MovePlayer()
 {
-    InputComponent* inputComponent = mParent->GetComponent<InputComponent>();
+    InputComponent* inputComponent = mParent.GetComponent<InputComponent>();
     InputState input = inputComponent->GetInput();
 
     Ogre::Vector3 direction = Ogre::Vector3::ZERO; // create movement vector
@@ -26,6 +26,6 @@ void MovePlayer()
     if (input.left) {direction.x -= 1.0f;}
     if (input.right) {direction.x += 1.0f;}
 
-    PhysicsComponent* physicsComponent = mParent->GetComponent<PhysicsComponent>();
-    physicsComponent.ApplyMovement(input, mMoveSpeed);
+    PhysicsComponent* physicsComponent = mParent.GetComponent<PhysicsComponent>();
+    physicsComponent->ApplyMovement(direction, mMoveSpeed);
 }

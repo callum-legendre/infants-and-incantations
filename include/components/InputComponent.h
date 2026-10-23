@@ -15,7 +15,7 @@ struct InputState // for storing the input state
     bool right = false;
 };
 
-class InputComponent : Component
+class InputComponent : public Component
 {
     public:
 

@@ -26,7 +26,7 @@ namespace Ogre
 namespace ObjectFactory
 {
     void ConfigureObjectComponents(std::string objectType, Ogre::Node* node, Ogre::Bullet::DynamicsWorld& worldPhysics);
-    Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent, Ogre::SceneNode player);
+    Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent, Ogre::SceneNode* player);
 };
 
 #endif

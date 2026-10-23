@@ -11,13 +11,9 @@ It also contains member functions of code to do with movement for ease of use
 
 #include <OgreBullet.h>
 
-namespace Ogre
+class PhysicsComponent : public Component
 {
-    class Vector3;
-}
-
-class PhysicsComponent : Component
-{
+    public:
     PhysicsComponent(ComponentManager& parent, btRigidBody& rigidbody);
 
     void ApplyMovement(Ogre::Vector3 direction, float moveSpeed);

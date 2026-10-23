@@ -14,8 +14,10 @@ namespace Ogre
     class SceneNode;
 }
 
-class PlayerCameraScript : protected ScriptComponent
+class PlayerCameraScript : public ScriptComponent
 {
+    public:
+    
     PlayerCameraScript(ComponentManager& parent, Ogre::SceneNode* player);
 
     void Update(float deltaTime) override;

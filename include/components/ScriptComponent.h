@@ -10,7 +10,7 @@ This inheritance pattern is so that they can be managed by the component manager
 
 class ComponentManager;
 
-class ScriptComponent : protected Component
+class ScriptComponent : public Component
 {
     public:
     ScriptComponent(ComponentManager& parent) : Component(parent) {}

@@ -2,8 +2,10 @@
 
 #include "ObjectFactory.h"
 #include "ComponentManager.h"
+#include "ObjectNames.h"
 
 #include <string>
+#include <memory>
 
 // ogre includes
 #include "OgreSceneManager.h"
@@ -11,6 +13,7 @@
 #include "OgreBullet.h"
 #include "OgreSceneNode.h"
 #include "OgreUserObjectBindings.h"
+#include "OgreEntity.h"
 
 LevelScene::LevelScene(Ogre::SceneManager& scnMgr, Ogre::Bullet::DynamicsWorld& worldPhysics) : scnMgr(scnMgr), worldPhysics(worldPhysics)
 {} // takes screen manager and the game dynamic as an argument
@@ -23,7 +26,7 @@ void LevelScene::Load()
     // load the DotScene
     mRootNode->loadChildren("testScene.scene");
 
-    ObjectFactory::CreatePlayerCamera(mRootNode, *scnMgr.getSceneNode("Player"));
+    ObjectFactory::CreatePlayerCamera(mRootNode, scnMgr.getSceneNode(ObjectNames::Player));
 
     CreateComponents(); // create the colliders and attach them to all objects that need it
     CreateLighting(); // TEMPORARY AS MY TEST SCENE DOES NOT HAVE ANY LIGHTING BY DEFAULT
@@ -44,20 +47,35 @@ void LevelScene::CreateLighting()
     lightNode->attachObject(light);
 }
 
-void LevelScene::CreateComponents(Ogre::Node* node = nullptr)
+void LevelScene::CreateComponents(Ogre::Node* node)
 {
+    if (node == nullptr){
+        node = mRootNode;
+    }
+
     // iterate through all attached objects of the node that was passed in
     for (Ogre::Node* child : node->getChildren())
     {
-        const Ogre::Any& value = child->getUserObjectBindings().getUserAny("objectType");
+        Ogre::SceneNode* sceneNode = static_cast<Ogre::SceneNode*>(child);
 
-        // if there is no value then skip
-        if (!value.has_value()) continue;
+        for (Ogre::MovableObject* object : sceneNode->getAttachedObjects()){
 
-        // get the string value of the object binding
-        std::string objectType = Ogre::any_cast<std::string>(value);
+            Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(object);
 
-        ObjectFactory::ConfigureObjectComponents(objectType, node, worldPhysics);
+            if (!entity) continue;
+
+            const auto& value = entity->getUserObjectBindings().getUserAny("objectType");
+
+            // if there is no value then skip
+            if (!value.has_value()) continue;
+
+            // get the string value of the object binding
+            std::string objectType = Ogre::any_cast<std::string>(value);
+
+            ObjectFactory::ConfigureObjectComponents(objectType, child, worldPhysics);
+
+            break;
+        }
 
         CreateComponents(child);
     }
@@ -92,7 +110,7 @@ LevelScene::~LevelScene()
     Unload();
 }
 
-void LevelScene::Input(Ogre::Node* parent = nullptr)
+void LevelScene::Input(Ogre::Node* parent)
 {
     if (parent == nullptr){
         parent = mRootNode;
@@ -101,10 +119,10 @@ void LevelScene::Input(Ogre::Node* parent = nullptr)
     // iterate through each node
     for (Ogre::Node* child : parent->getChildren()){
 
-        Ogre::Any managerAny = parent->getUserObjectBindings().getUserAny("ComponentManager");
+        Ogre::Any managerAny = child->getUserObjectBindings().getUserAny("ComponentManager");
         if (!managerAny.isEmpty()){
 
-            ComponentManager* manager = Ogre::any_cast<ComponentManager*>(managerAny);
+            std::shared_ptr<ComponentManager> manager = Ogre::any_cast<std::shared_ptr<ComponentManager>>(managerAny);
 
             if (manager->HasComponent<InputComponent>()){
 
@@ -116,7 +134,7 @@ void LevelScene::Input(Ogre::Node* parent = nullptr)
     }
 }
 
-void LevelScene::Update(float deltaTime, Ogre::Node* parent = nullptr)
+void LevelScene::Update(float deltaTime, Ogre::Node* parent)
 {
     if (parent == nullptr){
         parent = mRootNode;
@@ -125,15 +143,12 @@ void LevelScene::Update(float deltaTime, Ogre::Node* parent = nullptr)
     // iterate through each node for the scripts
     for (Ogre::Node* child : parent->getChildren()){
 
-        Ogre::Any managerAny = parent->getUserObjectBindings().getUserAny("ComponentManager");
+        Ogre::Any managerAny = child->getUserObjectBindings().getUserAny("ComponentManager");
         if (!managerAny.isEmpty()){
 
-            ComponentManager* manager = Ogre::any_cast<ComponentManager*>(managerAny);
+            std::shared_ptr<ComponentManager> manager = Ogre::any_cast<std::shared_ptr<ComponentManager>>(managerAny);
 
-            if (manager->HasComponent<ScriptComponent>()){
-
-                manager->GetComponent<ScriptComponent>()->Update(deltaTime);
-            }
+            manager->UpdateScripts(deltaTime);
         }
 
         Update(deltaTime, child);

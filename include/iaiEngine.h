@@ -58,8 +58,10 @@ private:
     std::filesystem::path getResourceDirectory() const;
     void RTSSInitialise();
     void Input();
-    void Update();
+    void Update(float deltaTime);
     void Render();
+
+    bool mRunning = false;
 };
 
 #endif

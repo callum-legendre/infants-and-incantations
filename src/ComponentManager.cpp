@@ -1,48 +1,20 @@
 #include "ComponentManager.h"
 
 #include "components/Component.h"
+#include "components/ScriptComponent.h"
 
 ComponentManager::ComponentManager(Ogre::SceneNode* parent) : mParent(parent) {}
-
-// add component method
-template <typename ComponentType, typename... Args> // template function type declaration
-void ComponentManager::AddComponent(Args&&... args)
-{
-    mComponentMap[typeid(ComponentType)] = std::make_unique<ComponentType>(std::forward<Args>(args)...);
-}
-
-// get component method
-template <typename ComponentType> // also templated
-ComponentType* ComponentManager::GetComponent()
-{
-    // get the type index of the component to get
-    std::type_index typeIndex = typeid(ComponentType);
-
-    // search map for it
-    auto found = mComponentMap.find(typeIndex);
-
-    // if not found return nullptr
-    if (found == mComponentMap.end()){
-        return nullptr;
-    }
-    else {
-        // else return the component
-        return static_cast<ComponentType*>(found->second.get());
-    }
-}
-
-template <typename ComponentType> // has function that returns a bool
-bool ComponentManager::HasComponent()
-{
-    if (mComponentMap.find(typeid(ComponentType)) == mComponentMap.end()){
-        return false;
-    }
-    else {
-        return true;
-    }
-}
 
 Ogre::SceneNode* ComponentManager::GetParentNode()
 {
     return mParent;
+}
+
+void ComponentManager::UpdateScripts(float deltaTime)
+{
+    for (auto& [type, component] : mComponentMap) {
+        if (auto* script = dynamic_cast<ScriptComponent*>(component.get())) {
+            script->Update(deltaTime);
+        }
+    }
 }

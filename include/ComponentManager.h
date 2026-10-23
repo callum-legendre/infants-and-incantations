@@ -1,3 +1,5 @@
+#ifndef COMPONENTMANAGER_H
+#define COMPONENTMANAGER_H
 /*
 This file contains both the container class that will actually be bound to the the scenenode
 The container object will be the function to actually store each component, and will contain member functions for this end.
@@ -5,8 +7,8 @@ The container object will be the function to actually store each component, and 
 
 #include <unordered_map>
 #include <typeindex>
-// #include <memory>
-// #include <utility>
+#include <memory>
+#include <utility>
 
 namespace Ogre
 {
@@ -21,17 +23,49 @@ class ComponentManager
 
     ComponentManager(Ogre::SceneNode* parent);
 
-    // creates a specific component stores its
-    template <typename ComponentType, typename... Args> void AddComponent(Args&&... args); // template function type declaration
+    // add component method
+    template <typename ComponentType, typename... Args> // template function type declaration
+    void AddComponent(Args&&... args)
+    {
+        mComponentMap[typeid(ComponentType)] = std::make_unique<ComponentType>(std::forward<Args>(args)...);
+    }
 
-    // returns the component
-    template <typename ComponentType> ComponentType* GetComponent(); // also templated
+    // get component method
+    template <typename ComponentType> // also templated
+    ComponentType* GetComponent()
+    {
+        // get the type index of the component to get
+        std::type_index typeIndex = typeid(ComponentType);
+
+        // search map for it
+        auto found = mComponentMap.find(typeIndex);
+
+        // if not found return nullptr
+        if (found == mComponentMap.end()){
+            return nullptr;
+        }
+        else {
+            // else return the component
+            return static_cast<ComponentType*>(found->second.get());
+        }
+    }
 
     // returns true if the object has the component, false otherwise
-    template <typename ComponentType> bool HasComponent(); // has function that returns a bool
+    template <typename ComponentType> // has function that returns a bool
+    bool HasComponent()
+    {
+        if (mComponentMap.find(typeid(ComponentType)) == mComponentMap.end()){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 
     // runs each frame update. Updates all components in the correct order
     void Update();
+
+    void UpdateScripts(float deltaTime);
 
     Ogre::SceneNode* GetParentNode();
 
@@ -44,3 +78,5 @@ class ComponentManager
     Ogre::SceneNode* mParent;
 
 };
+
+#endif

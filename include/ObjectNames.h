@@ -3,10 +3,10 @@
 
 namespace ObjectNames
 {
-    inline constexpr char Player[] = "player";
-    inline constexpr char PlayerCamera[] = "playerCamera";
-    inline constexpr char Box[] = "box";
-    inline constexpr char Plane[] = "plane";
+    inline constexpr char Player[] = "Player";
+    inline constexpr char PlayerCamera[] = "PlayerCamera";
+    inline constexpr char Box[] = "Box";
+    inline constexpr char Plane[] = "Plane";
 }
 
 #endif

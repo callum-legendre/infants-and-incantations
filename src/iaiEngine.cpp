@@ -1,5 +1,7 @@
 #include "iaiEngine.h"
 
+#include "ObjectNames.h"
+
 Engine::Engine()   
 {
     // make resource path
@@ -71,13 +73,13 @@ void Engine::SDLInitialise()
 void Engine::Run()
 {
     // set running to true for the loop
-    bool running = true;
+    mRunning = true;
 
     const Uint64 frequency = SDL_GetPerformanceFrequency(); // get the number of SDL counter ticks each second (the frequency of them)
     Uint64 previousCounter = SDL_GetPerformanceCounter(); // get the current number of counter ticks, this will become the previous number of ticks when loop is entered 
 
     // loop that updates every frame
-    while (running)
+    while (mRunning)
     {
         // get the current counter at the beginning of each frame 
         const Uint64 currentCounter = SDL_GetPerformanceCounter();
@@ -92,7 +94,7 @@ void Engine::Run()
         const float clampedTime = std::min(deltaTime, 0.1f);
 
         Input();
-        Update();
+        Update(clampedTime);
         Render();
     }
 }
@@ -100,7 +102,7 @@ void Engine::Run()
 void Engine::viewportInitialise()
 {
     // get the camera
-    Ogre::Camera* cam = scnMgr->getSceneNode("PlayerCameraNode")->getAttachedObject(0); // we know it is the only (and therefore first) object attached to the node 
+    Ogre::Camera* cam = static_cast<Ogre::Camera*>(scnMgr->getSceneNode(ObjectNames::PlayerCamera)->getAttachedObject(0)); // we know it is the only (and therefore first) object attached to the node 
 
     // tell it to render that camera into the window
     vp = mRenderWindow->addViewport(cam);
@@ -243,7 +245,7 @@ void Engine::Input()
         switch(e.type)
         {
             case SDL_QUIT: // if the window was closed, then exit the frame loop
-                running = false;
+                mRunning = false;
                 break;
             case SDL_WINDOWEVENT: // if other event, then resize the window properly
             if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
@@ -261,23 +263,22 @@ void Engine::Input()
     session->Input();
 }
 
-void Engine::Update()
+void Engine::Update(float deltaTime)
 {
     // update the game
-    session->Update(clampedTime);
+    session->Update(deltaTime);
 }
 
 void Engine::Render()
 {
     // check to see if the window was closed here for redundancy
     if (mRenderWindow->isClosed()){
-        running = false;
-        break;
+        mRunning = false;
     }
 
     // update the frame as long as the window is open
     SDL_PumpEvents();
     if (!root->renderOneFrame()) {
-        running = false;
+        mRunning = false;
     }
 }

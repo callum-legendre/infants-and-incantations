@@ -24,7 +24,7 @@ namespace ObjectFactory
             rb->setAngularFactor(btVector3(0, 0, 0)); // prevent the capsule from topping which makes the baby roll
 
             std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(playerNode);
-            Ogre::UserObjectBindings bindings = playerNode->getUserObjectBindings();
+            Ogre::UserObjectBindings& bindings = playerNode->getUserObjectBindings();
             bindings.setUserAny("ComponentManager", manager);
 
             manager->AddComponent<InputComponent>(*manager);
@@ -35,7 +35,7 @@ namespace ObjectFactory
         void ConfigureBox(Ogre::SceneNode* boxNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
         {
             std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(boxNode);
-            Ogre::UserObjectBindings bindings = boxNode->getUserObjectBindings();
+            Ogre::UserObjectBindings& bindings = boxNode->getUserObjectBindings();
             bindings.setUserAny("ComponentManager", manager);
 
             float boxMass = 5.0f;
@@ -48,7 +48,7 @@ namespace ObjectFactory
         void ConfigurePlane(Ogre::SceneNode* planeNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
         {
             std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(planeNode);
-            Ogre::UserObjectBindings bindings = planeNode->getUserObjectBindings();
+            Ogre::UserObjectBindings& bindings = planeNode->getUserObjectBindings();
             bindings.setUserAny("ComponentManager", manager);
 
             Ogre::Entity* planeMesh = dynamic_cast<Ogre::Entity*>(planeNode->getAttachedObject(0)); // the first attached object is guaranteed to be the entity (for boxes, at least)
@@ -90,7 +90,7 @@ namespace ObjectFactory
         cameraNode->attachObject(cam);
 
         std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(cameraNode);
-        Ogre::UserObjectBindings bindings = cameraNode->getUserObjectBindings();
+        Ogre::UserObjectBindings& bindings = cameraNode->getUserObjectBindings();
         bindings.setUserAny("ComponentManager", manager);
 
         manager->AddComponent<PlayerCameraScript>(*manager, player);
