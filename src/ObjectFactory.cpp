@@ -7,9 +7,23 @@
 // all of the component and script includes were moved to the header file to save some space
 
 #include <memory>
+#include <string>
 
 namespace ObjectFactory
 {
+    void ConfigureObjectComponents(std::string objectType, Ogre::Node* node, Ogre::Bullet::DynamicsWorld& worldPhysics)
+    {
+        // convert to sceneNode
+        Ogre::SceneNode* sceneNode = static_cast<Ogre::SceneNode*>(node);
+
+        if (objectType == "player"){
+            ConfigurePlayer(sceneNode, worldPhysics);
+        }
+        else if (objectType == "box"){
+            ConfigureBox(sceneNode, worldPhysics);
+        }
+    }
+
     // -- create functions -- 
         Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent, Ogre::SceneNode* player)
         {
@@ -34,7 +48,8 @@ namespace ObjectFactory
             return cameraNode;
         }
 
-    // -- configure functions --
+    namespace // namespace is blank to act as pseudo private functions for the factories
+    {
         void ConfigurePlayer(Ogre::SceneNode* playerNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
         {
             Ogre::Entity* playerMesh = dynamic_cast<Ogre::Entity*>(playerNode->getAttachedObject(0)); // the first attached object is guaranteed to be the entity (for boxes, at least)
@@ -64,10 +79,6 @@ namespace ObjectFactory
 
             manager->AddComponent<PhysicsComponent>(std::make_unique<PhysicsComponent>(manager, rb));
         }
-
-    namespace // namespace is blank to act as pseudo private functions for the factories
-    {
-        
     }
 
 }
