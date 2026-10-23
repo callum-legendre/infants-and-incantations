@@ -25,9 +25,9 @@ namespace Ogre
 
 namespace ObjectFactory
 {
-    Ogre::SceneNode* CreatePlayer(Ogre::SceneNode* parent, Ogre::Bullet::DynamicsWorld& worldPhysics);
     Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent);
-    Ogre::SceneNode* CreateBox(Ogre::SceneNode* parent, Ogre::Bullet::DynamicsWorld& worldPhysics);
+    void ConfigurePlayer(Ogre::SceneNode* parent, Ogre::Bullet::DynamicsWorld& worldPhysics);
+    void ConfigureBox(Ogre::SceneNode* parent, Ogre::Bullet::DynamicsWorld& worldPhysics);
 };
 
 #endif
