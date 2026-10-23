@@ -14,14 +14,14 @@ void GameSession::LoadLevel()
 {
     // unload the previous level if one is loaded
     if (currentScene != nullptr){
-        currentScene->unload();
+        currentScene->Unload();
     }
 
     // instanciate the level
     currentScene = std::make_unique<LevelScene>(scnMgr, *worldPhysics);
     
     // load the level
-    currentScene->load();
+    currentScene->Load();
 }
 
 void GameSession::Input()

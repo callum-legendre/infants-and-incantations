@@ -22,6 +22,9 @@ namespace ObjectFactory
         else if (objectType == "box"){
             ConfigureBox(sceneNode, worldPhysics);
         }
+        else if (objectType == "plane"){
+            ConfigurePlane(sceneNode, worldPhysics);
+        }
     }
 
     // -- create functions -- 
@@ -73,9 +76,21 @@ namespace ObjectFactory
             Ogre::UserObjectBindings bindings = boxNode->getUserObjectBindings();
             bindings.setUserAny("ComponentManager", manager);
 
-            float boxMass = 1.0f;
+            float boxMass = 5.0f;
             Ogre::Entity* boxMesh = dynamic_cast<Ogre::Entity*>(boxNode->getAttachedObject(0)); // the first attached object is guaranteed to be the entity (for boxes, at least)
             btRigidBody* rb = worldPhysics.addRigidBody(boxMass, boxMesh, Ogre::Bullet::CT_BOX);
+
+            manager->AddComponent<PhysicsComponent>(std::make_unique<PhysicsComponent>(manager, rb));
+        }
+
+        void ConfigurePlane(Ogre::SceneNode* planeNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
+        {
+            std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(planeNode);
+            Ogre::UserObjectBindings bindings = planeNode->getUserObjectBindings();
+            bindings.setUserAny("ComponentManager", manager);
+
+            Ogre::Entity* planeMesh = dynamic_cast<Ogre::Entity*>(planeNode->getAttachedObject(0)); // the first attached object is guaranteed to be the entity (for boxes, at least)
+            btRigidBody* rb = worldPhysics.addRigidBody(0.0f, planeMesh, Ogre::Bullet::CT_TRIMESH); // mass 0 because it should be immovable
 
             manager->AddComponent<PhysicsComponent>(std::make_unique<PhysicsComponent>(manager, rb));
         }
