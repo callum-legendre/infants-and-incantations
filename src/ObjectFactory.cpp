@@ -1,4 +1,6 @@
 #include "ObjectFactory.h"
+#include "ObjectNames.h"
+
 #include "OgreSceneNode.h"
 #include "OgreEntity.h"
 #include "OgreBullet.h"
@@ -11,46 +13,6 @@
 
 namespace ObjectFactory
 {
-    void ConfigureObjectComponents(std::string objectType, Ogre::Node* node, Ogre::Bullet::DynamicsWorld& worldPhysics)
-    {
-        // convert to sceneNode
-        Ogre::SceneNode* sceneNode = static_cast<Ogre::SceneNode*>(node);
-
-        if (objectType == "player"){
-            ConfigurePlayer(sceneNode, worldPhysics);
-        }
-        else if (objectType == "box"){
-            ConfigureBox(sceneNode, worldPhysics);
-        }
-        else if (objectType == "plane"){
-            ConfigurePlane(sceneNode, worldPhysics);
-        }
-    }
-
-    // -- create functions -- 
-        Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent, Ogre::SceneNode* player)
-        {
-            Ogre::SceneNode* cameraNode = parent->createChildSceneNode("PlayerCameraNode");
-
-            // move camera node to correct starting position
-            cameraNode->setPosition(0, 0, 15);
-            cameraNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
-        
-            // create the camera
-            Ogre::Camera* cam = cameraNode->getCreator()->createCamera("playerCamera");
-            cam->setNearClipDistance(5);
-            cam->setAutoAspectRatio(true);
-            cameraNode->attachObject(cam);
-
-            std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(cameraNode);
-            Ogre::UserObjectBindings bindings = cameraNode->getUserObjectBindings();
-            bindings.setUserAny("ComponentManager", manager);
-
-            manager->AddComponent<PlayerCameraScript>(std::make_unique<PlayerCameraScript>(manager, player));
-
-            return cameraNode;
-        }
-
     namespace // namespace is blank to act as pseudo private functions for the factories
     {
         void ConfigurePlayer(Ogre::SceneNode* playerNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
@@ -65,9 +27,9 @@ namespace ObjectFactory
             Ogre::UserObjectBindings bindings = playerNode->getUserObjectBindings();
             bindings.setUserAny("ComponentManager", manager);
 
-            manager->AddComponent<InputComponent>(std::make_unique<InputComponent>(manager));
-            manager->AddComponent<PhysicsComponent>(std::make_unique<PhysicsComponent>(manager, rb));
-            manager->AddComponent<PlayerScript>(std::make_unique<PlayerScript>(manager));
+            manager->AddComponent<InputComponent>(*manager);
+            manager->AddComponent<PhysicsComponent>(*manager, *rb);
+            manager->AddComponent<PlayerScript>(*manager);
         }
     
         void ConfigureBox(Ogre::SceneNode* boxNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
@@ -80,7 +42,7 @@ namespace ObjectFactory
             Ogre::Entity* boxMesh = dynamic_cast<Ogre::Entity*>(boxNode->getAttachedObject(0)); // the first attached object is guaranteed to be the entity (for boxes, at least)
             btRigidBody* rb = worldPhysics.addRigidBody(boxMass, boxMesh, Ogre::Bullet::CT_BOX);
 
-            manager->AddComponent<PhysicsComponent>(std::make_unique<PhysicsComponent>(manager, rb));
+            manager->AddComponent<PhysicsComponent>(*manager, *rb);
         }
 
         void ConfigurePlane(Ogre::SceneNode* planeNode, Ogre::Bullet::DynamicsWorld& worldPhysics)
@@ -92,8 +54,49 @@ namespace ObjectFactory
             Ogre::Entity* planeMesh = dynamic_cast<Ogre::Entity*>(planeNode->getAttachedObject(0)); // the first attached object is guaranteed to be the entity (for boxes, at least)
             btRigidBody* rb = worldPhysics.addRigidBody(0.0f, planeMesh, Ogre::Bullet::CT_TRIMESH); // mass 0 because it should be immovable
 
-            manager->AddComponent<PhysicsComponent>(std::make_unique<PhysicsComponent>(manager, rb));
+            manager->AddComponent<PhysicsComponent>(*manager, *rb);
         }
     }
 
+    void ConfigureObjectComponents(std::string objectType, Ogre::Node* node, Ogre::Bullet::DynamicsWorld& worldPhysics)
+    {
+        // convert to sceneNode
+        Ogre::SceneNode* sceneNode = static_cast<Ogre::SceneNode*>(node);
+
+        if (objectType == ObjectNames::Player){
+            ConfigurePlayer(sceneNode, worldPhysics);
+        }
+        else if (objectType == ObjectNames::Box){
+            ConfigureBox(sceneNode, worldPhysics);
+        }
+        else if (objectType == ObjectNames::Plane){
+            ConfigurePlane(sceneNode, worldPhysics);
+        }
+    }
+
+    // -- create functions -- 
+    Ogre::SceneNode* CreatePlayerCamera(Ogre::SceneNode* parent, Ogre::SceneNode* player)
+    {
+        Ogre::SceneNode* cameraNode = parent->createChildSceneNode(ObjectNames::PlayerCamera);
+
+        // move camera node to correct starting position
+        cameraNode->setPosition(0, 0, 15);
+        cameraNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT);
+    
+        // create the camera
+        Ogre::Camera* cam = cameraNode->getCreator()->createCamera(ObjectNames::PlayerCamera);
+        cam->setNearClipDistance(5);
+        cam->setAutoAspectRatio(true);
+        cameraNode->attachObject(cam);
+
+        std::shared_ptr<ComponentManager> manager = std::make_shared<ComponentManager>(cameraNode);
+        Ogre::UserObjectBindings bindings = cameraNode->getUserObjectBindings();
+        bindings.setUserAny("ComponentManager", manager);
+
+        manager->AddComponent<PlayerCameraScript>(*manager, player);
+
+        return cameraNode;
+    }
 }
+
+
