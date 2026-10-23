@@ -122,7 +122,7 @@ void LevelScene::Input(Ogre::Node* parent)
 
             InputComponent* inputComponent = manager->GetComponent<InputComponent>();
 
-            if (!inputComponent){
+            if (inputComponent){
                 inputComponent->OnInput();
             }
         }
