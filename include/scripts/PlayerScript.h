@@ -14,7 +14,9 @@ class PlayerScript : public ScriptComponent
 
     private:
 
-    void MovePlayer();
+    void MovePlayer(InputState input);
+
+    void CastSpell(InputState input);
 
     static constexpr float mMoveSpeed = 5.0f; // the multiplier for how fast the player moves (by default)
 };

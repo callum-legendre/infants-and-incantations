@@ -10,13 +10,15 @@ PlayerScript::PlayerScript(ComponentManager& parent) : ScriptComponent(parent) {
 
 void PlayerScript::Update(float deltaTime)
 {
-    MovePlayer();
-}
-
-void PlayerScript::MovePlayer()
-{
     InputComponent* inputComponent = mParent.GetComponent<InputComponent>();
     InputState input = inputComponent->GetInput();
+
+    MovePlayer(input);
+}
+
+void PlayerScript::MovePlayer(InputState input)
+{
+
 
     Ogre::Vector3 direction = Ogre::Vector3::ZERO; // create movement vector
 
@@ -28,4 +30,9 @@ void PlayerScript::MovePlayer()
 
     PhysicsComponent* physicsComponent = mParent.GetComponent<PhysicsComponent>();
     physicsComponent->ApplyMovement(direction, mMoveSpeed);
+}
+
+void PlayerScript::CastSpell()
+{
+    
 }
