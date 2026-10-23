@@ -8,6 +8,8 @@ A solo C++ action-RPG prototype focused on engine integration and component-base
 
 The project is in active development and currently provides a controllable, physics-driven player inside a rendered test level.
 
+![Gameplay showing player movement, physics, and camera tracking](docs/gameplay.gif)
+
 ## Current Build
 
 Implemented:
