@@ -8,6 +8,8 @@ A solo C++ action-RPG prototype focused on engine integration and component-base
 
 The project is in active development and currently provides a controllable, physics-driven player inside a rendered test level.
 
+The [design document](https://github.com/callum-legendre/infants-and-incantations/blob/main/docs/Infants%20and%20Incantations%20Design%20Document.pdf) contains a more in depth discussion on the gameplay loop, design principles, and game design goals with the prototype. The document also details some of the plans for the game past this prototype.
+
 ![Gameplay showing player movement, physics, and camera tracking](docs/prototype.gif)
 
 ## Current Build
